@@ -55,12 +55,12 @@ namespace Atom
         /// <returns>true if sucessfully added</returns>
         public bool AddParticle(Particle particle)
         {
-            if(NextShell != null && !NextShell.Full)
+            if (NextShell != null && !NextShell.Full)
             {
                 return NextShell.AddParticle(particle);
             }
             //make sure the particle is an electron and the shell is not full
-            else if (particle.GetType().Equals(typeof(Electron)) && !Full )
+            else if (particle.GetType().Equals(typeof(Electron)) && !Full)
             {
                 //add the particle
                 particles.Add(particle);
@@ -97,7 +97,7 @@ namespace Atom
                 //recursively check if particle in next shell
                 if (NextShell.RemoveParticle(particle))
                 {
-                    if(particles.Count > 0)
+                    if (particles.Count > 0)
                     {
                         //replace the removed partcicle with one from this shell
                         Particle transferParticle = particles[0];
@@ -114,47 +114,41 @@ namespace Atom
 
         private void FixedUpdate()
         {
-            foreach (Particle particle in particles)
+            for (int i = 0, len = particles.Count; i < len; i++)
             {
                 //calculate force to get into orbit
-                Vector3 diffRadius = transform.position - particle.PhysicsObj.Position;
+                Vector3 diffRadius = transform.position - particles[i].PhysicsObj.Position;
                 Vector2 forceToRadius = diffRadius.normalized * (diffRadius.magnitude - Radius) * particleSpeed;
 
                 //calculate force to maintain orbit
                 Vector2 forceToOrbit = new Vector2(-diffRadius.y, diffRadius.x).normalized * orbitSpeed * scale;
 
-                //calculate the force to seperate
-                Vector2 forceToSeperate = Vector3.zero;
-                foreach (Particle other in particles)
-                {
-                    //don't seperate from self
-                    if (!particle.Equals(other))
-                    {
-                        //find the distance between particles
-                        Vector2 diffOther = particle.PhysicsObj.Position - other.PhysicsObj.Position;
-
-                        //rare occurance, but seperate from identical other
-                        if (diffOther.sqrMagnitude < 0.01)
-                        {
-                            forceToSeperate = Random.insideUnitSphere;
-                        }
-                        else
-                        {
-                            //calculate the amount of overlap
-                            float overlap = diffOther.magnitude - seperationDistance;
-
-                            if (overlap < 0)
-                            {
-                                //add force to seperate
-                                forceToSeperate -= diffOther.normalized * overlap;
-                            }
-                        }
-                    }
-                }
-                forceToSeperate *= particleSpeed;
-
                 //apply forces to the particles
-                particle.PhysicsObj.AddForce(forceToRadius + forceToOrbit + forceToSeperate);
+                particles[i].PhysicsObj.AddForce(forceToRadius + forceToOrbit);
+
+                for (int j = 0; j < i; j++)
+                {
+
+                    //find the distance between particles
+                    Vector2 diffOther = particles[i].PhysicsObj.Position - particles[j].PhysicsObj.Position;
+
+                    //rare occurance, but seperate from identical other
+                    if (diffOther.sqrMagnitude < 0.01) { particles[i].PhysicsObj.AddForce(Random.insideUnitSphere); }
+
+                    //calculate the amount of overlap
+                    float overlap = diffOther.magnitude - seperationDistance;
+
+                    if (overlap < 0)
+                    {
+                        //add force to seperate
+                        Vector2 forceToSeperate = diffOther.normalized * overlap * particleSpeed;
+                        //apply forces to the particles
+                        particles[i].PhysicsObj.AddForce(-forceToSeperate);
+                        particles[j].PhysicsObj.AddForce(forceToSeperate);
+
+                    }
+
+                }
             }
         }
 

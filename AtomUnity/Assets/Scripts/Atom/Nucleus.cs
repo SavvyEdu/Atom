@@ -175,51 +175,33 @@ namespace Atom
                 physicsObject.AddForce(forceToOrigin);
             }
 
-            float m = 0;
-
-            foreach (Particle particle in particles)
+            for (int i = 0, len = particles.Count; i < len; i++)
             {
                 //find the distance from origin
-                Vector3 diffOrgin = transform.position - particle.PhysicsObj.Position;
+                Vector3 diffOrgin = transform.position - particles[i].PhysicsObj.Position;
                 //calculate the force to center ( clamp is used so particles slow near center
                 Vector3 forceToCenter = Vector3.ClampMagnitude(diffOrgin.normalized * (particleSpeed * scale), diffOrgin.magnitude);
+                particles[i].PhysicsObj.AddForce(forceToCenter);
 
-                if(diffOrgin.magnitude > m)
+                for (int j = 0; j < i; j++)
                 {
-                    m = diffOrgin.magnitude;
-                }
+                    //find the distance between particles
+                    Vector3 diffOther = particles[i].PhysicsObj.Position - particles[j].PhysicsObj.Position;
+                    if(diffOther.sqrMagnitude == 0) { particles[i].PhysicsObj.AddForce(Random.insideUnitSphere); }
 
-                //calculate the force to seperate
-                Vector3 forceToSeperate = Vector3.zero;
-                foreach (Particle other in particles)
-                {
-                    //don't seperate from self
-                    if (!particle.Equals(other))
+                    //calculate the amount of overlap
+                    float overlap = diffOther.magnitude - particles[i].Radius- particles[j].Radius;
+                    //check if actually overlapping
+                    if (overlap < 0)
                     {
-                        //find the distance between particles
-                        Vector3 diffOther = particle.PhysicsObj.Position - other.PhysicsObj.Position;
-                        
-                        //rare occurance, but seperate from identical other
-                        if (diffOther.sqrMagnitude < 0.01)
-                        {
-                            forceToSeperate = Random.insideUnitSphere;
-                        }
-                        else
-                        {
-                            //calculate the amount of overlap
-                            float overlap = diffOther.magnitude - particle.Radius - other.Radius;
-                            //check if actually overlapping
-                            if (overlap < 0)
-                            {
-                                //add force to seperate
-                                forceToSeperate -= diffOther.normalized * overlap;
-                            }
-                        }
+                        //add force to seperate
+                        Vector3 forceToSeperate = diffOther.normalized * overlap * particleSpeed * scale;
+                        //apply forces to the particles
+                        //apply forces to the particles
+                        particles[i].PhysicsObj.AddForce(-forceToSeperate);
+                        particles[j].PhysicsObj.AddForce(forceToSeperate);
                     }
                 }
-                forceToSeperate *= particleSpeed * scale;
-                //apply forces to the particles
-                particle.PhysicsObj.AddForce(forceToCenter + forceToSeperate);
             }
         }
 
