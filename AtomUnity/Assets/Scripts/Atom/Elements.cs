@@ -9,7 +9,11 @@ namespace Atom
         /// <summary>
         /// Contains ALL the data about elements
         /// </summary>
+        /// 
 
+        private static Element[] elements = ElementsIO.Load();
+
+            /*
         private static Element[] elements = new Element[]
         {
             #region Period 1 elements
@@ -1655,7 +1659,7 @@ namespace Atom
                     new Isotope(147)
                 })
             #endregion
-        };
+        };*/
 
         public static Element GetElement(int protonCount)
         {

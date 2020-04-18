@@ -50,7 +50,12 @@ namespace Atom
 
             excessParticles = new List<Particle>();
 
-            ForceToCommon(1); //default to Hydrogen
+            //ForceToCommon(1); //default to Hydrogen
+        }
+
+        private void Start()
+        {
+            ForceToCommon(1);
         }
 
         private void Update()
