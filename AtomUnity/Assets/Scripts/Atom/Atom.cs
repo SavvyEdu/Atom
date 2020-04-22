@@ -200,7 +200,7 @@ namespace Atom
             
             if(OuterShell.NextShell != null)
             {
-                while (!OuterShell.NextShell.pBlockFull || !OuterShell.NextShell.sBlockFull)
+                while (!OuterShell.NextShell.pBlockFull)
                 {
                     workbench.NewAutoElectron();
                 }

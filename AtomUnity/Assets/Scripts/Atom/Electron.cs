@@ -47,7 +47,7 @@ namespace Atom
             //check if must be added to pBlock of Next Shell
             if(atom.OuterShell && atom.OuterShell.NextShell)
             {
-                mustAdd = !atom.OuterShell.NextShell.pBlockFull || !atom.OuterShell.NextShell.sBlockFull;
+                mustAdd = !atom.OuterShell.NextShell.pBlockFull;
                 //check if must be added to dBlock of Next Next Shell
                 if(!mustAdd && atom.OuterShell.NextShell.NextShell)
                 {

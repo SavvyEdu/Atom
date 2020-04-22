@@ -33,9 +33,9 @@ namespace Atom
         public int ElectronCount => particles.Count; 
         public Particle[] Particles => particles.ToArray();
         public bool sBlockFull => ElectronCount >= 2;
-        public bool pBlockFull => ElectronCount >= 8 || MaxParticles <= 2;
-        public bool dBlockFull => ElectronCount >= 18 || MaxParticles <= 8;
-        public bool fBlockFull => ElectronCount >= 32 || MaxParticles <= 18;
+        public bool pBlockFull => (ElectronCount >= 8 || MaxParticles <= 2) && sBlockFull;
+        public bool dBlockFull => (ElectronCount >= 18 || MaxParticles <= 8) && pBlockFull;
+        public bool fBlockFull => (ElectronCount >= 32 || MaxParticles <= 18) && dBlockFull;
         public Shell NextShell { get; set; }
         public int MaxParticles { get; set; }
 
@@ -67,7 +67,7 @@ namespace Atom
             //0 recursively fill in electrons in prev that MUST be there
             if (NextShell)
             {
-                if (!NextShell.pBlockFull || !NextShell.sBlockFull)
+                if (!NextShell.pBlockFull)
                 {
                     return NextShell.AddParticle(particle);
                 }
@@ -83,20 +83,14 @@ namespace Atom
             if(NextShell)
             {
                 //2 Fill n-2 fBlock
-                if(NextShell.NextShell && (!NextShell.NextShell.fBlockFull || 
-                                           !NextShell.NextShell.dBlockFull || 
-                                           !NextShell.NextShell.pBlockFull || 
-                                           !NextShell.NextShell.sBlockFull))
+                if(NextShell.NextShell && !NextShell.NextShell.fBlockFull)
                 {
                     NextShell.NextShell.Add(particle);
                     return true;
                 }
 
                 //3 Fill n-1 dBlock
-                if (!NextShell.dBlockFull || 
-                    !NextShell.pBlockFull || 
-                    !NextShell.sBlockFull)
-                {
+                if (!NextShell.dBlockFull) {
                     NextShell.Add(particle);
                     return true;
                 }
