@@ -165,14 +165,10 @@ namespace Atom
         private void FixedUpdate()
         {
             Vector3 forceToOrigin = origin - transform.localPosition;
+            physicsObject.AddForce(forceToOrigin);
             if (Shake)
             {
-                Vector3 forceToShake = Random.insideUnitSphere;
-                physicsObject.AddForce(forceToShake + forceToOrigin);
-            }
-            else
-            {
-                physicsObject.AddForce(forceToOrigin);
+                physicsObject.AddForce(Random.insideUnitSphere * scale);
             }
 
             for (int i = 0, len = particles.Count; i < len; i++)
@@ -187,8 +183,9 @@ namespace Atom
                 {
                     //find the distance between particles
                     Vector3 diffOther = particles[i].PhysicsObj.Position - particles[j].PhysicsObj.Position;
-                    if(diffOther.sqrMagnitude == 0) { particles[i].PhysicsObj.AddForce(Random.insideUnitSphere); }
 
+                    //rare occurance, but seperate from identical other
+                    if (diffOther.sqrMagnitude < 0.0001f) { particles[i].PhysicsObj.AddForce(Random.insideUnitSphere); }
                     //calculate the amount of overlap
                     float overlap = diffOther.magnitude - particles[i].Radius- particles[j].Radius;
                     //check if actually overlapping

@@ -21,12 +21,6 @@ namespace Atom
         private List<Particle> excessParticles; //particles that are not part of the atom 
         private float scale = 1;
 
-        //TODO: replace with constants
-        [SerializeField] private Color sBlockColor;
-        [SerializeField] private Color pBlockColor;
-        [SerializeField] private Color dBlockColor;
-        [SerializeField] private Color fBlockColor;
-
         public bool Interactable { get { return interactable; } set { interactable = value; } }
         public Nucleus Nucleus { get; private set; }
         public Shell OuterShell { get { return shells.Peek(); } }
@@ -49,13 +43,11 @@ namespace Atom
             shells = new Stack<Shell>();
 
             excessParticles = new List<Particle>();
-
-            //ForceToCommon(1); //default to Hydrogen
         }
 
         private void Start()
         {
-            ForceToCommon(1);
+            ForceToCommon(1); //default to Hydrogen
         }
 
         private void Update()
@@ -205,11 +197,13 @@ namespace Atom
 
             //push shell onto stack
             shells.Push(shell);
-
-            //fill the next shell 
-            if (OuterShell.NextShell != null)
+            
+            if(OuterShell.NextShell != null)
             {
-                workbench.NewAutoElectron(OuterShell.NextShell.MaxParticles - OuterShell.NextShell.ElectronCount);
+                while (!OuterShell.NextShell.pBlockFull || !OuterShell.NextShell.sBlockFull)
+                {
+                    workbench.NewAutoElectron();
+                }
             }
         }
 

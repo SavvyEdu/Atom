@@ -7,21 +7,27 @@ using System;
 namespace Atom {
     public class ElementsIO
     {
+        /// <summary>
+        /// Loads in the element data from CSV
+        /// </summary>
+        /// <returns>element dat</returns>
         public static Element[] Load()
         {
             TextAsset textAsset = Resources.Load("Elements") as TextAsset;
             Element[] elements = new Element[118];
 
-            List<Isotope> isotopes = new List<Isotope>(); //temp list
+            List<Isotope> isotopes = new List<Isotope>(); //temp list of isotopes
 
             string[] lines = textAsset.text.Split('\n');
-            for(int e = 1; e< 119; e++) // 6 -> 119 ------------------------------------- TO DO WHEN DONE TESTING
+            for(int e = 1; e< 119; e++) //loop over rows 1-119
             {
                 string[] cells = lines[e].Split(',');
 
-                //Get Isotopes
+                
                 isotopes.Clear();
-                for(int i = 10; i < 304; i++)
+
+                //get isotope abundances
+                for (int i = 10; i < 304; i++)
                 {
                     float abundance;
                     if(float.TryParse(cells[i], out abundance))

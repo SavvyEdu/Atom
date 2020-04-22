@@ -14,6 +14,12 @@ namespace Atom
         private float scale = 1;
         private float radius;
 
+        //TODO: replace with constants
+        private Color sBlockColor = new Color(0,0.3f, 0.3f);
+        private Color pBlockColor = new Color(0, 0.7f, 0.7f);
+        private Color dBlockColor = new Color(0, 1f, 0.5f);
+        private Color fBlockColor = new Color(0.2f, 0.5f, 0.9f);
+
         public float Radius
         {
             get { return radius; }
@@ -24,12 +30,15 @@ namespace Atom
             }
         }//desired orbital radius
 
-        public int ElectronCount { get { return particles.Count; } }
+        public int ElectronCount => particles.Count; 
+        public Particle[] Particles => particles.ToArray();
+        public bool sBlockFull => ElectronCount >= 2;
+        public bool pBlockFull => ElectronCount >= 8 || MaxParticles <= 2;
+        public bool dBlockFull => ElectronCount >= 18 || MaxParticles <= 8;
+        public bool fBlockFull => ElectronCount >= 32 || MaxParticles <= 18;
         public Shell NextShell { get; set; }
         public int MaxParticles { get; set; }
-        public bool Full { get { return ElectronCount == MaxParticles; } }
-        public bool Empty { get { return ElectronCount == 0; } }
-        public Particle[] Particles { get { return particles.ToArray(); } }
+
         public float Scale
         {
             set
@@ -55,23 +64,65 @@ namespace Atom
         /// <returns>true if sucessfully added</returns>
         public bool AddParticle(Particle particle)
         {
-            if (NextShell != null && !NextShell.Full)
+            //0 recursively fill in electrons in prev that MUST be there
+            if (NextShell)
             {
-                return NextShell.AddParticle(particle);
+                if (!NextShell.pBlockFull || !NextShell.sBlockFull)
+                {
+                    return NextShell.AddParticle(particle);
+                }
             }
-            //make sure the particle is an electron and the shell is not full
-            else if (particle.GetType().Equals(typeof(Electron)) && !Full)
-            {
-                //add the particle
-                particles.Add(particle);
-                particle.transform.SetParent(transform);
-                particle.Radius = scale / 4;
 
-                //calculate the new seperation distance
-                CalcSeperationDistance();
+            //1 Fill own sBlock
+            if (!sBlockFull)
+            {
+                Add(particle);
                 return true;
             }
+
+            if(NextShell)
+            {
+                //2 Fill n-2 fBlock
+                if(NextShell.NextShell && (!NextShell.NextShell.fBlockFull || 
+                                           !NextShell.NextShell.dBlockFull || 
+                                           !NextShell.NextShell.pBlockFull || 
+                                           !NextShell.NextShell.sBlockFull))
+                {
+                    NextShell.NextShell.Add(particle);
+                    return true;
+                }
+
+                //3 Fill n-1 dBlock
+                if (!NextShell.dBlockFull || 
+                    !NextShell.pBlockFull || 
+                    !NextShell.sBlockFull)
+                {
+                    NextShell.Add(particle);
+                    return true;
+                }
+            }
+
+            //4 Fill own blocks
+            if(!pBlockFull)
+            {
+                Add(particle);
+                return true;
+            }
+
             return false;
+        }
+
+        //helper add function for actually adding the particle
+        private void Add(Particle particle)
+        {
+            //add the particle
+            particles.Add(particle);
+            particle.transform.SetParent(transform);
+            particle.Radius = scale / 4;
+
+            //calculate the new seperation distance
+            CalcSeperationDistance();
+            ColorParticles();
         }
 
         /// <summary>
@@ -82,7 +133,7 @@ namespace Atom
         public bool RemoveParticle(Particle particle)
         {
             //make sure the particle is an electron and actually in this shell
-            if (particle.GetType().Equals(typeof(Electron)) && particles.Contains(particle))
+            if (particle is Electron && particles.Contains(particle))
             {
                 particles.Remove(particle);
                 particle.transform.SetParent(null);
@@ -97,12 +148,13 @@ namespace Atom
                 //recursively check if particle in next shell
                 if (NextShell.RemoveParticle(particle))
                 {
-                    if (particles.Count > 0)
+                    //succeeded in removing particle (only take from sblock of Next pblock needs)
+                    if (ElectronCount > 2 || (!NextShell.pBlockFull && ElectronCount > 0))
                     {
                         //replace the removed partcicle with one from this shell
                         Particle transferParticle = particles[0];
                         particles.Remove(transferParticle);
-                        NextShell.AddParticle(transferParticle);
+                        NextShell.Add(transferParticle);
 
                         CalcSeperationDistance();
                     }
@@ -112,9 +164,21 @@ namespace Atom
             return false;
         }
 
+        //Recolors the particles
+        private void ColorParticles()
+        {
+            for(int i = 0, len = ElectronCount; i< len; i++)
+            {
+                if (i < 2) particles[i].GetComponent<Renderer>().material.color = sBlockColor;
+                else if (i < 8) particles[i].GetComponent<Renderer>().material.color = pBlockColor;
+                else if (i < 18) particles[i].GetComponent<Renderer>().material.color = dBlockColor;
+                else particles[i].GetComponent<Renderer>().material.color = fBlockColor;
+            }
+        }
+
         private void FixedUpdate()
         {
-            for (int i = 0, len = particles.Count; i < len; i++)
+            for (int i = 0, len = ElectronCount; i < len; i++)
             {
                 //calculate force to get into orbit
                 Vector3 diffRadius = transform.position - particles[i].PhysicsObj.Position;
@@ -133,11 +197,10 @@ namespace Atom
                     Vector2 diffOther = particles[i].PhysicsObj.Position - particles[j].PhysicsObj.Position;
 
                     //rare occurance, but seperate from identical other
-                    if (diffOther.sqrMagnitude < 0.01) { particles[i].PhysicsObj.AddForce(Random.insideUnitSphere); }
+                    if (diffOther.sqrMagnitude < 0.001) { particles[i].PhysicsObj.AddForce(Random.insideUnitSphere); }
 
                     //calculate the amount of overlap
                     float overlap = diffOther.magnitude - seperationDistance;
-
                     if (overlap < 0)
                     {
                         //add force to seperate
@@ -178,7 +241,7 @@ namespace Atom
         /// <returns>distance between points</returns>
         private void CalcSeperationDistance()
         {
-            seperationDistance = 2 * Radius * Mathf.Sin(Mathf.PI / particles.Count);
+            seperationDistance = 2 * Radius * Mathf.Sin(Mathf.PI / ElectronCount);
         }
 
         private void OnDrawGizmosSelected()

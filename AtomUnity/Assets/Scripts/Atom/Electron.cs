@@ -43,8 +43,23 @@ namespace Atom
         protected override void DropParticle()
         {
             //electron must be added when Next Shell exists and isn't Full
-            bool mustAdd = atom.OuterShell != null && atom.OuterShell.NextShell != null && !atom.OuterShell.NextShell.Full;
-            
+            bool mustAdd = false; 
+            //check if must be added to pBlock of Next Shell
+            if(atom.OuterShell && atom.OuterShell.NextShell)
+            {
+                mustAdd = !atom.OuterShell.NextShell.pBlockFull || !atom.OuterShell.NextShell.sBlockFull;
+                //check if must be added to dBlock of Next Next Shell
+                if(!mustAdd && atom.OuterShell.NextShell.NextShell)
+                {
+                    mustAdd = !atom.OuterShell.NextShell.NextShell.dBlockFull;
+                    //check if must be added to fBlock of Next Next Next Shell
+                    if (!mustAdd && atom.OuterShell.NextShell.NextShell.NextShell)
+                    {
+                        mustAdd = !atom.OuterShell.NextShell.NextShell.NextShell.fBlockFull;
+                    }
+                }
+            }
+
             //check not already part of atom, within atom bounds, and can actually be added
             if (!inAtom && (!atom.Interactable || atom.Contains(transform.position) || mustAdd ) && atom.OuterShell.AddParticle(this))
             {
