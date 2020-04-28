@@ -6,8 +6,9 @@ namespace Atom
 {
     public class Shell : MonoBehaviour
     {
-        [SerializeField] private float particleSpeed; //magnitude of force to get into orbit
-        [SerializeField] private float orbitSpeed; //magnitude of orbital force
+        private const float ALIGNMENT_SPEED = 2.0f; //magnitude of force to get into orbit
+        private const float ORBIT_SPEED = 0.05f; //magnitude of orbital force
+        private const float SEPERATION_SPEED = 3.0f; //magnitude of speration force
 
         private List<Particle> particles; //list of all the particles in this shell
         private float seperationDistance; //how far apart each electron should be
@@ -134,6 +135,7 @@ namespace Atom
 
                 //calculate the new seperation distance
                 CalcSeperationDistance();
+                ColorParticles();
                 return true;
             }
             //not in shell, check the next one
@@ -151,6 +153,7 @@ namespace Atom
                         NextShell.Add(transferParticle);
 
                         CalcSeperationDistance();
+                        ColorParticles();
                     }
                     return true;
                 }
@@ -176,17 +179,16 @@ namespace Atom
             {
                 //calculate force to get into orbit
                 Vector3 diffRadius = transform.position - particles[i].PhysicsObj.Position;
-                Vector2 forceToRadius = diffRadius.normalized * (diffRadius.magnitude - Radius) * particleSpeed;
+                Vector2 forceToRadius = diffRadius.normalized * (diffRadius.sqrMagnitude - Radius*Radius) * ALIGNMENT_SPEED;
 
                 //calculate force to maintain orbit
-                Vector2 forceToOrbit = new Vector2(-diffRadius.y, diffRadius.x).normalized * orbitSpeed * scale;
+                Vector2 forceToOrbit = new Vector2(-diffRadius.y, diffRadius.x).normalized * ORBIT_SPEED * scale;
 
                 //apply forces to the particles
                 particles[i].PhysicsObj.AddForce(forceToRadius + forceToOrbit);
 
                 for (int j = 0; j < i; j++)
                 {
-
                     //find the distance between particles
                     Vector2 diffOther = particles[i].PhysicsObj.Position - particles[j].PhysicsObj.Position;
 
@@ -198,13 +200,11 @@ namespace Atom
                     if (overlap < 0)
                     {
                         //add force to seperate
-                        Vector2 forceToSeperate = diffOther.normalized * overlap * particleSpeed;
+                        Vector2 forceToSeperate = diffOther.normalized * overlap * SEPERATION_SPEED ;
                         //apply forces to the particles
                         particles[i].PhysicsObj.AddForce(-forceToSeperate);
                         particles[j].PhysicsObj.AddForce(forceToSeperate);
-
                     }
-
                 }
             }
         }

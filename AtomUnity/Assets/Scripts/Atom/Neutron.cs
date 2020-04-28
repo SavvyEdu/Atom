@@ -23,7 +23,6 @@ namespace Atom
             if (inAtom && atom.Nucleus.RemoveParticle(this))
             {
                 base.PickUpParticle();
-                Debug.Log("Neutron Removed");
             }
             else
             {
@@ -37,7 +36,6 @@ namespace Atom
             if (!inAtom && (!atom.Interactable || atom.Contains(transform.position) || atom.Nucleus.Mass < atom.Nucleus.MassMin) && atom.Nucleus.AddParticle(this))
             {
                 base.DropParticle();
-                Debug.Log("Neutron Added");
             }
             //neutron out of bounds or could not be added
             else

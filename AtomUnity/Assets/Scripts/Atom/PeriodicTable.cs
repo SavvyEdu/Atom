@@ -48,8 +48,6 @@ namespace Atom
         /// <param name="protonCount">proton count of element to set</param>
         private void SetElement(int protonCount)
         {
-            Debug.Log("Show element: " + Elements.GetElement(protonCount).Name);
-
             if(atom != null)
             {
                 atom.ForceToCommon(protonCount);

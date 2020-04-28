@@ -32,7 +32,6 @@ namespace Atom
             if (inAtom && atom.RemoveElectron(this))
             {
                 base.PickUpParticle();
-                Debug.Log("Electron Removed");
             }
             else
             {
@@ -64,7 +63,6 @@ namespace Atom
             if (!inAtom && (!atom.Interactable || atom.Contains(transform.position) || mustAdd ) && atom.OuterShell.AddParticle(this))
             {
                 base.DropParticle();
-                Debug.Log("Electron Added");
             }
             //electron out of bounds or cound not be added 
             else

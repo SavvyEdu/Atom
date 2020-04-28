@@ -9,26 +9,30 @@ public class Transition : MonoBehaviour
 {
     [SerializeField] private Trans[] transitions;
 
-    private int index = 0;
-
     //Lerp variables
     private const float lerpTime = 1.0f;
     private float currLerpTime = 0.0f;
 
+    private void Start()
+    {
+        StartTransition(0);
+    }
+
     public void StartTransition(int index)
     {
-        this.index = index;
-        currLerpTime = 0;
-
+        StartCoroutine(LerpTo(index));
+       
         if (transitions[index].atomTransition != null)
         {
             transitions[index].atomTransition.atom.Interactable = transitions[index].atomTransition.interactable;
         }
     }
 
-    private void Update()
+    private IEnumerator LerpTo(int index)
     {
-        if (currLerpTime < lerpTime)
+        currLerpTime = 0;
+
+        while (currLerpTime < lerpTime)
         {
             currLerpTime += Time.deltaTime;
             if (currLerpTime > lerpTime)
@@ -41,12 +45,13 @@ public class Transition : MonoBehaviour
             //p = Mathf.Pow(p, 1f / 6f);
             foreach (DUITrans DUITrans in transitions[index].DUItransitions)
             {
-                DUITrans.Update(p);  
+                DUITrans.Update(p);
             }
             if (transitions[index].atomTransition != null)
             {
                 transitions[index].atomTransition.atom.AdjustScale();
             }
+            yield return new WaitForEndOfFrame();
         }
     }
 }

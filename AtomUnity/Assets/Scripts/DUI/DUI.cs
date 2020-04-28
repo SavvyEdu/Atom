@@ -11,9 +11,10 @@ namespace DUI
         public static float cameraHeight; //height of the screen in Unity units
         public static float cameraWidth; //width of the screen in Unity Units 
 
-        public static Vector2 inputPos; //position of the mouse or touch in Unity Unitys
-        public static Vector2 inputPosPrev; //position of the mouse or touch in Unity Units last frame
+        public static Vector3 inputPos; //position of the mouse or touch in Unity Unitys
+        public static Vector3 inputPosPrev; //position of the mouse or touch in Unity Units last frame
 
+        private DUIButton buttonOver;
         private void Awake()
         {
             Camera cam = Camera.main;
@@ -46,8 +47,19 @@ namespace DUI
             inputPosPrev = inputPos;
 
             //only need to calculate input position once
-#if UNITY_EDITOR || UNITY_STANDALONE
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
             inputPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            inputPos.z = 0;
+            
+            RaycastHit hit;
+            if (Physics.Raycast(inputPos + Vector3.back * 10, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
+            {
+                if (Input.GetMouseButtonDown(0) && (buttonOver = hit.transform.GetComponent<DUIButton>()) != null)
+                {
+                    buttonOver.OnClick?.Invoke();
+                }
+            }
+
 #elif UNITY_ANDROID || UNITY_IOS
             inputPos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
 #endif  

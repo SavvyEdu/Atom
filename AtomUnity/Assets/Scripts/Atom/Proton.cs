@@ -23,7 +23,6 @@ namespace Atom
             if (inAtom && atom.Nucleus.RemoveParticle(this))
             {
                 base.PickUpParticle();
-                Debug.Log("Proton Removed");
             }
             else
             {
@@ -36,7 +35,6 @@ namespace Atom
             if (!inAtom && (!atom.Interactable || atom.Contains(transform.position) || atom.Nucleus.ProtonCount == 0) && atom.Nucleus.AddParticle(this))
             {
                 base.DropParticle();
-                Debug.Log("Proton Added");
             }
             //proton out of bounds or could not be added
             else

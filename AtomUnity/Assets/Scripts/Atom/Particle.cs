@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
-using Physics;
+using Atom.Physics;
 using DUI;
 
 namespace Atom
 {
     [RequireComponent(typeof(PhysicsObject))]
-    [RequireComponent(typeof(DUISphereButton))]
+    [RequireComponent(typeof(DUIButton))]
     public abstract class Particle : MonoBehaviour
     {
-        private DUISphereButton sphereButton; //ref to attached DUI sphere collider 
+        private DUIButton sphereButton; //ref to attached DUI sphere collider 
         private const int releaseSpeed = 20;
 
         protected bool inAtom = false; //internally true when part of the atom
@@ -32,10 +32,10 @@ namespace Atom
         {
             //find components
             PhysicsObj = GetComponent<PhysicsObject>();
-            sphereButton = GetComponent<DUISphereButton>();
+            sphereButton = GetComponent<DUIButton>();
 
             //set spherebutton to have same radius as particle
-            sphereButton.Radius = Mathf.Max(0.5f, Radius);
+            //sphereButton.Radius = Mathf.Max(0.5f, Radius);
 
             //get the satic reference to the atom
             if(atom == null)
@@ -59,7 +59,7 @@ namespace Atom
             if (selected)
             {
                 //move to mouse position 
-                transform.position = (Vector3)DUI.DUI.inputPos + Vector3.back;
+                transform.position = DUI.DUI.inputPos + Vector3.back;
 
                 //call deselect when intut released
                 if (Input.GetMouseButtonUp(0))

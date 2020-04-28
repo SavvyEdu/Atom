@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Physics;
+using Atom.Physics;
 
 namespace Atom
 {
@@ -12,8 +12,8 @@ namespace Atom
         /// Handles the behavior of Atom's nucleus
         /// </summary>
 
-        private const float particleSpeed = 1.2f; //magnitude of force to center
-        private const float rotationSpeed = 20; //degees to spin 
+        private const float PARTICLE_SPEED = 1.2f; //magnitude of force to center
+        private const float ROTATION_SPEED = 20; //degees to spin 
 
         private List<Particle> particles; //list of all particles in nucleus
         private float scale;
@@ -159,7 +159,7 @@ namespace Atom
         void Update()
         {
             //slowly spin the nucleus
-            transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.up, ROTATION_SPEED * Time.deltaTime);
         }
 
         private void FixedUpdate()
@@ -176,7 +176,7 @@ namespace Atom
                 //find the distance from origin
                 Vector3 diffOrgin = transform.position - particles[i].PhysicsObj.Position;
                 //calculate the force to center ( clamp is used so particles slow near center
-                Vector3 forceToCenter = Vector3.ClampMagnitude(diffOrgin.normalized * (particleSpeed * scale), diffOrgin.magnitude);
+                Vector3 forceToCenter = Vector3.ClampMagnitude(diffOrgin.normalized * (PARTICLE_SPEED * scale), diffOrgin.magnitude);
                 particles[i].PhysicsObj.AddForce(forceToCenter);
 
                 for (int j = 0; j < i; j++)
@@ -186,13 +186,14 @@ namespace Atom
 
                     //rare occurance, but seperate from identical other
                     if (diffOther.sqrMagnitude < 0.0001f) { particles[i].PhysicsObj.AddForce(Random.insideUnitSphere); }
+
                     //calculate the amount of overlap
-                    float overlap = diffOther.magnitude - particles[i].Radius- particles[j].Radius;
+                    float overlap = diffOther.magnitude - (particles[i].Radius ) - (particles[j].Radius );
                     //check if actually overlapping
                     if (overlap < 0)
                     {
                         //add force to seperate
-                        Vector3 forceToSeperate = diffOther.normalized * overlap * particleSpeed * scale;
+                        Vector3 forceToSeperate = diffOther.normalized * overlap * PARTICLE_SPEED * scale;
                         //apply forces to the particles
                         //apply forces to the particles
                         particles[i].PhysicsObj.AddForce(-forceToSeperate);

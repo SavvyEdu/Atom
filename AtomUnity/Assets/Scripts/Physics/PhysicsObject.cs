@@ -1,45 +1,47 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-namespace Physics
+namespace Atom
 {
-    public class PhysicsObject : MonoBehaviour
+    namespace Physics
     {
-        /// <summary>
-        /// Handles basic physics calculations
-        /// </summary>
-
-        //TODO make get porpertys and method for apply forces so that these are hidden
-        public Vector3 Position { get; private set; } //current postion of the object
-        public Vector3 Velocity { get; private set; } //current velocity of the object
-
-        [SerializeField] [Range(0, 1)] private float drag; //amout to slow velocity by every update
-
-        private void Start()
+        public class PhysicsObject : MonoBehaviour
         {
-            Position = transform.position;
-        }
+            /// <summary>
+            /// Handles basic physics calculations
+            /// </summary>
 
-        public void AddForce(Vector3 force)
-        {
-            Velocity += force;
-        }
+            //TODO make get porpertys and method for apply forces so that these are hidden
+            public Vector3 Position { get; private set; } //current postion of the object
+            public Vector3 Velocity { get; private set; } //current velocity of the object
 
-        private void FixedUpdate()
-        {
-            //get the current position
-            Position = transform.position;
+            [SerializeField] [Range(0, 1)] private float drag; //amout to slow velocity by every update
 
-            //move by velocity
-            Position += Velocity * Time.deltaTime;
+            private void Start()
+            {
+                Position = transform.position;
+            }
 
-            //apply to transform
-            transform.position = Position;
+            public void AddForce(Vector3 force)
+            {
+                Velocity += force;
+            }
 
-            //apply drag
-            Velocity *= 1 - drag;
+            private void FixedUpdate()
+            {
+                //get the current position
+                Position = transform.position;
+
+                //move by velocity
+                Position += Velocity * Time.deltaTime;
+
+                //apply to transform
+                transform.position = Position;
+
+                //apply drag
+                Velocity *= 1 - drag;
+            }
         }
     }
-}
 
+}
