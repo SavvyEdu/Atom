@@ -6,16 +6,16 @@ namespace Atom
 {
     public class Shell : MonoBehaviour
     {
-        private const float ALIGNMENT_SPEED = 2.0f; //magnitude of force to get into orbit
+        private const float ALIGNMENT_SPEED = 1.0f; //magnitude of force to get into orbit
         private const float ORBIT_SPEED = 0.05f; //magnitude of orbital force
-        private const float SEPERATION_SPEED = 3.0f; //magnitude of speration force
+        private const float SEPERATION_SPEED = 7.0f; //magnitude of speration force
 
         private List<Particle> particles; //list of all the particles in this shell
         private float seperationDistance; //how far apart each electron should be
         private float scale = 1;
-        private float radius;
+        private float radius; //desired orbital radius
 
-        //TODO: replace with constants
+        //colors for each of the different blocks 
         private Color sBlockColor = new Color(0,0.3f, 0.3f);
         private Color pBlockColor = new Color(0, 0.7f, 0.7f);
         private Color dBlockColor = new Color(0, 1f, 0.5f);
@@ -29,15 +29,17 @@ namespace Atom
                 radius = value;
                 CalcSeperationDistance();
             }
-        }//desired orbital radius
+        }
 
-        public int ElectronCount => particles.Count; 
+        public int ElectronCount => particles.Count; //quick ref for particles.Count
         public Particle[] Particles => particles.ToArray();
-        public bool sBlockFull => ElectronCount >= 2;
-        public bool pBlockFull => (ElectronCount >= 8 || MaxParticles <= 2) && sBlockFull;
-        public bool dBlockFull => (ElectronCount >= 18 || MaxParticles <= 8) && pBlockFull;
-        public bool fBlockFull => (ElectronCount >= 32 || MaxParticles <= 18) && dBlockFull;
-        public Shell NextShell { get; set; }
+        public bool sBlockFull => ElectronCount >= 2; //checks s block full
+        public bool pBlockFull => (ElectronCount >= 8 || MaxParticles <= 2) && sBlockFull; //checks p s blocks full
+        public bool dBlockFull => (ElectronCount >= 18 || MaxParticles <= 8) && pBlockFull; //checks d p s blocks full
+        public bool fBlockFull => (ElectronCount >= 32 || MaxParticles <= 18) && dBlockFull; //check f d p s blocks full
+        
+        /// <summary> The shell directly below this one </summary>
+        public Shell NextShell { get; set; } 
         public int MaxParticles { get; set; }
 
         public float Scale
@@ -46,12 +48,9 @@ namespace Atom
             {
                 scale = value;
                 foreach (Electron particle in particles)
-                {
                     particle.Radius = scale / 4;
-                }
             }
         }
-
 
         private void Awake()
         {
@@ -59,13 +58,13 @@ namespace Atom
         }
 
         /// <summary>
-        /// Add a particle to this shell
+        /// Figures out where to Add a particle
         /// </summary>
         /// <param name="particle">Particle to be added</param>
         /// <returns>true if sucessfully added</returns>
         public bool AddParticle(Particle particle)
         {
-            //0 recursively fill in electrons in prev that MUST be there
+            //0 recursively fill in electrons in PREVIOUS LEVEL that MUST be there
             if (NextShell)
             {
                 if (!NextShell.pBlockFull)
@@ -74,7 +73,7 @@ namespace Atom
                 }
             }
 
-            //1 Fill own sBlock
+            //1 Fill shell sBlock
             if (!sBlockFull)
             {
                 Add(particle);
@@ -83,31 +82,32 @@ namespace Atom
 
             if(NextShell)
             {
-                //2 Fill n-2 fBlock
+                //2 Fill shell-2 fBlock
                 if(NextShell.NextShell && !NextShell.NextShell.fBlockFull)
                 {
                     NextShell.NextShell.Add(particle);
                     return true;
                 }
 
-                //3 Fill n-1 dBlock
+                //3 Fill shell-1 dBlock
                 if (!NextShell.dBlockFull) {
                     NextShell.Add(particle);
                     return true;
                 }
             }
 
-            //4 Fill own blocks
+            //4 Fill shell blocks
             if(!pBlockFull)
             {
                 Add(particle);
                 return true;
             }
 
+            //No open place for electron
             return false;
         }
 
-        //helper add function for actually adding the particle
+        //helper add function for actually adding the particle into a shell
         private void Add(Particle particle)
         {
             //add the particle
@@ -120,6 +120,7 @@ namespace Atom
             ColorParticles();
         }
 
+
         /// <summary>
         /// Removes a particle from this shell
         /// </summary>
@@ -130,12 +131,11 @@ namespace Atom
             //make sure the particle is an electron and actually in this shell
             if (particle is Electron && particles.Contains(particle))
             {
-                particles.Remove(particle);
+                //remove particle from this layer
+                Remove(particle);
                 particle.transform.SetParent(null);
 
-                //calculate the new seperation distance
-                CalcSeperationDistance();
-                ColorParticles();
+                FallUp();
                 return true;
             }
             //not in shell, check the next one
@@ -144,21 +144,50 @@ namespace Atom
                 //recursively check if particle in next shell
                 if (NextShell.RemoveParticle(particle))
                 {
-                    //succeeded in removing particle (only take from sblock of Next pblock needs)
-                    if (ElectronCount > 2 || (!NextShell.pBlockFull && ElectronCount > 0))
-                    {
+                    //make sure there are electrons AND NOT (sBlock into dBlock OR pBlock into fBlock)
+                    if (ElectronCount > 0 && !((ElectronCount <= 2 && NextShell.pBlockFull) || (ElectronCount <= 8 && NextShell.dBlockFull))) {
                         //replace the removed partcicle with one from this shell
-                        Particle transferParticle = particles[0];
-                        particles.Remove(transferParticle);
-                        NextShell.Add(transferParticle);
-
-                        CalcSeperationDistance();
-                        ColorParticles();
+                        TransferParticle(this, NextShell);
+                        FallUp(); 
                     }
                     return true;
                 }
             }
             return false;
+        }
+
+        //helper remove function for actually removing particle
+        private void Remove(Particle particle)
+        {
+            particles.Remove(particle);
+            //calculate the new seperation distance
+            CalcSeperationDistance();
+            ColorParticles();
+        }
+
+        // helper function for moving electrons back up the atom
+        void FallUp()
+        {
+            //check if sBlock not full (should only occur on outer shell)
+            if (!sBlockFull && NextShell != null) //
+            {
+                //raise shell-1 dBlock into sBlock
+                if (NextShell.ElectronCount > 8)
+                    TransferParticle(NextShell, this);
+                //dBlock empty raise shell-2 fBlock into sBlcok
+                else if (NextShell.NextShell != null && NextShell.NextShell.ElectronCount > 18)
+                    TransferParticle(NextShell.NextShell, this);
+            }
+        }
+
+        /// <summary> Helper funtion for moving particles between shells </summary>
+        /// <param name="from">Shell to take a particle from</param>
+        /// <param name="to">Shell to add particle to</param>
+        private void TransferParticle(Shell from, Shell to)
+        {
+            Particle transferParticle = from.particles[0];
+            from.Remove(transferParticle);
+            to.Add(transferParticle);
         }
 
         //Recolors the particles
@@ -178,7 +207,7 @@ namespace Atom
             for (int i = 0, len = ElectronCount; i < len; i++)
             {
                 //calculate force to get into orbit
-                Vector3 diffRadius = transform.position - particles[i].PhysicsObj.Position;
+                Vector2 diffRadius = transform.position - particles[i].PhysicsObj.Position;
                 Vector2 forceToRadius = diffRadius.normalized * (diffRadius.sqrMagnitude - Radius*Radius) * ALIGNMENT_SPEED;
 
                 //calculate force to maintain orbit
@@ -209,32 +238,31 @@ namespace Atom
             }
         }
 
+        /// <summary> Removes the specified number of electrons (Recursive) </summary>
+        /// <param name="num"></param>
         public void TrimElectrons(int num)
         {
-            if (num > 0)
+            if (num <= 0) return;
+
+            Particle[] pA = Particles; // copy to array so list can be mutated
+            foreach (Particle particle in pA)
             {
-                Particle[] pA = particles.ToArray(); // copy to array so list can be mutated
-                foreach (Particle particle in pA)
-                {
-                    RemoveParticle(particle);
-                    particle.OnDeselect?.Invoke();
+                //Run removal logic
+                RemoveParticle(particle);
+                particle.OnDeselect?.Invoke();
 
-                    if (--num <= 0)
-                        return;
-                }
-
-                //trim remaining from next shell
-                NextShell.TrimElectrons(num);
+                if (--num <= 0) return; //decrement num and check if done
             }
+
+            //trim remaining num from next shell
+            NextShell.TrimElectrons(num);
         }
 
-        /// <summary>
-        /// calculates the distance between points when n points are equally spaced on peremiter of circle
-        /// </summary>
-        /// <param name="n">number of points on circle</param>
-        /// <returns>distance between points</returns>
+        /// <summary> update the desired distance between particles</summary>
+        /// <returns> distance between electrons </returns>
         private void CalcSeperationDistance()
         {
+            //Euclidian distance between n points on r radius circle (n = ElectronCount, r = Radius)
             seperationDistance = 2 * Radius * Mathf.Sin(Mathf.PI / ElectronCount);
         }
 

@@ -9,7 +9,7 @@ namespace Atom
     public class Atom : MonoBehaviour
     {
         /// <summary>
-        /// Controls the atom
+        /// Controls the Higher Level Atom fuctionality
         /// </summary>
 
         [SerializeField] private GameObject shellTemplate;
@@ -20,7 +20,6 @@ namespace Atom
         private DUIAnchor anchor; //ref to own DUI anchor
         private List<Particle> excessParticles; //particles that are not part of the atom 
         private float scale = 1;
-
         public bool Interactable { get { return interactable; } set { interactable = value; } }
         public Nucleus Nucleus { get; private set; }
         public Shell OuterShell { get { return shells.Peek(); } }
@@ -107,7 +106,7 @@ namespace Atom
                 {
                     //Seperate from atom
                     Vector2 diffToAtom = particle.PhysicsObj.Position - transform.position;
-                    Vector3 forceToSeperate = diffToAtom.normalized * seperateSpeed;
+                    Vector2 forceToSeperate = diffToAtom.normalized * seperateSpeed;
 
                     //Apply the force
                     particle.PhysicsObj.AddForce(forceToSeperate);
@@ -123,22 +122,24 @@ namespace Atom
             }
         }
 
-        /// <summary>
-        /// check if position is within the bounds of the Atom
-        /// </summary>
+        /// <summary> check if position is within the bounds of the Atom </summary>
         /// <param name="pos">position to check</param>
-        /// <returns>true when pos in anchor bounds</returns>
+        /// <returns> true when pos in anchor bounds </returns>
         public bool Contains(Vector2 pos)
         {
             return anchor.Bounds.Contains(pos);
         }
 
+        /// <summary> Add a particle to excess so it flys away </summary>
+        /// <param name="particle"></param>
         public void AddExcessParticle(Particle particle)
         {
             excessParticles.Add(particle);
             particle.transform.SetParent(transform);
         }
 
+        /// <summary> Remove a particle from excess while flying away </summary>
+        /// <param name="particle"></param>
         public void RemoveExcessParticle(Particle particle)
         {
             if (excessParticles.Contains(particle))
@@ -165,7 +166,8 @@ namespace Atom
         private void RemoveShell()
         {
             //remove any particles in the outer shell
-            foreach(Particle particle in OuterShell.Particles)
+            Particle[] pA = OuterShell.Particles;
+            foreach(Particle particle in pA)
             {
                 OuterShell.RemoveParticle(particle);
                 AddExcessParticle(particle);
@@ -198,12 +200,11 @@ namespace Atom
             //push shell onto stack
             shells.Push(shell);
             
+            //Fill the previous outerShell
             if(OuterShell.NextShell != null)
             {
                 while (!OuterShell.NextShell.pBlockFull)
-                {
                     workbench.NewAutoElectron();
-                }
             }
         }
 

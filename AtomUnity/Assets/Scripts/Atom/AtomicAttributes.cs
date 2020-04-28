@@ -9,12 +9,13 @@ namespace Atom
         [SerializeField] private Text formalNameUI;
         [SerializeField] private Text stableUI;
 
+        [SerializeField] private Text electronCountsUI;
+
         private void Update()
         {
             if (atom.Element != null)
             {
                 Isotope isotope = atom.Element.GetIsotope(atom.Nucleus.Mass);
-
                 if (isotope != null)
                 {
                     formalNameUI.text = isotope.FormalName.Length > 0 ? isotope.FormalName 
@@ -26,11 +27,21 @@ namespace Atom
                     formalNameUI.text = "Not Isotope";
                     stableUI.text = "Radioactive";
                 }
+
+                string counts = "";
+                Shell s = atom.OuterShell;
+                while(s != null)
+                {
+                    counts += s.ElectronCount + ", ";
+                    s = s.NextShell;
+                }
+                electronCountsUI.text = counts;
             }
             else
             {
                 formalNameUI.text = "";
                 stableUI.text = "";
+                electronCountsUI.text = "";
             }
         }
     }

@@ -60,7 +60,7 @@ namespace Atom
         public bool AddParticle(Particle particle)
         {
             //check type of particle
-            if (particle.GetType().Equals(typeof(Proton)) && ProtonCount < Elements.NumElements)
+            if (particle is Proton && ProtonCount < Elements.NumElements)
             {
                 ProtonCount++;
 
@@ -70,7 +70,7 @@ namespace Atom
                 particle.Radius = scale / 2;
                 return true;
             }
-            else if (particle.GetType().Equals(typeof(Neutron)) && NeutronCount < MassMax - ProtonCount)
+            else if (particle is Neutron && NeutronCount < MassMax - ProtonCount)
             {
                 NeutronCount++;
 
@@ -91,7 +91,7 @@ namespace Atom
         public bool RemoveParticle(Particle particle)
         {
             //check type of particle
-            if (particle.GetType().Equals(typeof(Proton)) && particles.Contains(particle))
+            if (particle is Proton && particles.Contains(particle))
             {
                 ProtonCount--;
 
@@ -100,7 +100,7 @@ namespace Atom
                 particle.transform.SetParent(null);
                 return true;
             }
-            else if (particle.GetType().Equals(typeof(Neutron)) && particles.Contains(particle))
+            else if (particle is Neutron && particles.Contains(particle))
             {
                 NeutronCount--;
 
@@ -119,7 +119,7 @@ namespace Atom
                 Particle[] pA = particles.ToArray(); // copy to array so list can be mutated
                 foreach (Particle particle in pA)
                 {
-                    if (particle.GetType().Equals(typeof(Proton)))
+                    if (particle is Proton)
                     {
                         RemoveParticle(particle);
                         particle.OnDeselect?.Invoke();
@@ -144,7 +144,7 @@ namespace Atom
                 Particle[] pA = particles.ToArray(); // copy to array so list can be mutated
                 foreach (Particle particle in pA)
                 {
-                    if (particle.GetType().Equals(typeof(Neutron)))
+                    if (particle is Neutron)
                     {
                         RemoveParticle(particle);
                         particle.OnDeselect?.Invoke();
@@ -206,7 +206,6 @@ namespace Atom
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
-
             Gizmos.DrawWireSphere(transform.position, Mathf.Log(Mass, 30 / scale) * scale + (scale / 2));
         }
     }
