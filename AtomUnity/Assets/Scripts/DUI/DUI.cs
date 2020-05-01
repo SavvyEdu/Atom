@@ -59,9 +59,21 @@ namespace DUI
                     buttonOver.OnClick?.Invoke();
                 }
             }
-
 #elif UNITY_ANDROID || UNITY_IOS
-            inputPos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+            if (Input.touchCount > 0) //make sure there are touches
+            {
+                inputPos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+                inputPos.z = 0;
+
+                RaycastHit hit;
+                if (Physics.Raycast(inputPos + Vector3.back * 10, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
+                {
+                    if (Input.GetMouseButtonDown(0) && (buttonOver = hit.transform.GetComponent<DUIButton>()) != null)
+                    {
+                        buttonOver.OnClick?.Invoke();
+                    }
+                }
+            }
 #endif  
         }
 

@@ -10,8 +10,10 @@ public class Transition : MonoBehaviour
     [SerializeField] private Trans[] transitions;
 
     //Lerp variables
-    private const float lerpTime = 1.0f;
+    [SerializeField] private float lerpTime = 1.0f;
     private float currLerpTime = 0.0f;
+
+    private bool t = false;
 
     private void Start()
     {
@@ -20,8 +22,26 @@ public class Transition : MonoBehaviour
 
     public void StartTransition(int index)
     {
+        if (t) { return; }
+        t = true;
         StartCoroutine(LerpTo(index));
-       
+        /*
+        foreach (DUITrans DUITrans in transitions[index].DUItransitions)
+        {
+            DUITrans.Update(1);
+        }
+        foreach(UITrans UITrans in transitions[index].UItransitions)
+        {
+            UITrans.Update(1);
+        }
+
+        if (transitions[index].atomTransition != null)
+        {
+            transitions[index].atomTransition.atom.AdjustScale();
+            transitions[index].atomTransition.atom.Interactable = transitions[index].atomTransition.interactable;
+        }*/
+
+
         if (transitions[index].atomTransition != null)
         {
             transitions[index].atomTransition.atom.Interactable = transitions[index].atomTransition.interactable;
@@ -40,12 +60,16 @@ public class Transition : MonoBehaviour
                 currLerpTime = lerpTime;
             }
             float p = currLerpTime / lerpTime;
-            p = p * p * (3f - 2f * p); //smooth step
+            //p = p * p * (3f - 2f * p); //smooth step
             //p = p*p*p*(p*(p*6-15)+10); //smoother step
             //p = Mathf.Pow(p, 1f / 6f);
             foreach (DUITrans DUITrans in transitions[index].DUItransitions)
             {
                 DUITrans.Update(p);
+            }
+            foreach (UITrans UITrans in transitions[index].UItransitions)
+            {
+                UITrans.Update(p);
             }
             if (transitions[index].atomTransition != null)
             {
@@ -53,6 +77,7 @@ public class Transition : MonoBehaviour
             }
             yield return new WaitForEndOfFrame();
         }
+        t = false;
     }
 }
 
@@ -62,7 +87,7 @@ public class Trans
     public string name;
 
     public DUITrans[] DUItransitions;
-    //public UITrans[] UItransitions;
+    public UITrans[] UItransitions;
     public AtomTrans atomTransition;
 }
 
@@ -71,7 +96,6 @@ public class AtomTrans
 {
     public Atom.Atom atom;
     public bool interactable;
-
 }
 
 [System.Serializable]
@@ -94,13 +118,11 @@ public class UITrans
 {
     public RectTransform rectTransform;
 
-    public Vector2 min;
-    public Vector2 max;
+    public Vector2 position;
 
     public void Update(float p)
     {
-        rectTransform.anchorMax = Vector2.Lerp(rectTransform.anchorMax, max, p);
-        rectTransform.anchorMin = Vector2.Lerp(rectTransform.anchorMin, min, p);        
+        rectTransform.localPosition = Vector2.Lerp(rectTransform.localPosition, position, p);
     }
 
 }

@@ -170,15 +170,14 @@ namespace Atom
             {
                 physicsObject.AddForce(Random.insideUnitSphere * scale);
             }
-
             for (int i = 0, len = particles.Count; i < len; i++)
             {
                 //find the distance from origin
                 Vector3 diffOrgin = transform.position - particles[i].PhysicsObj.Position;
                 //calculate the force to center ( clamp is used so particles slow near center
-                Vector3 forceToCenter = Vector3.ClampMagnitude(diffOrgin.normalized * (PARTICLE_SPEED * scale), diffOrgin.magnitude);
+                Vector3 forceToCenter = Vector3.ClampMagnitude(diffOrgin.normalized * (PARTICLE_SPEED * scale), diffOrgin.sqrMagnitude);
                 particles[i].PhysicsObj.AddForce(forceToCenter);
-
+                
                 for (int j = 0; j < i; j++)
                 {
                     //find the distance between particles
@@ -188,18 +187,18 @@ namespace Atom
                     if (diffOther.sqrMagnitude < 0.0001f) { particles[i].PhysicsObj.AddForce(Random.insideUnitSphere); }
 
                     //calculate the amount of overlap
-                    float overlap = diffOther.magnitude - (particles[i].Radius ) - (particles[j].Radius );
+                    float overlap = diffOther.magnitude - (2* particles[i].Radius ); //radius is the same for both
                     //check if actually overlapping
                     if (overlap < 0)
                     {
                         //add force to seperate
                         Vector3 forceToSeperate = diffOther.normalized * overlap * PARTICLE_SPEED * scale;
                         //apply forces to the particles
-                        //apply forces to the particles
                         particles[i].PhysicsObj.AddForce(-forceToSeperate);
                         particles[j].PhysicsObj.AddForce(forceToSeperate);
                     }
                 }
+                
             }
         }
 
