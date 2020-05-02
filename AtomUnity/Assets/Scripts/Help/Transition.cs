@@ -7,6 +7,10 @@ using Atom;
 
 public class Transition : MonoBehaviour
 {
+    /// <summary>
+    /// Groups together transitions between modes
+    /// Not great but it works
+    /// </summary>
     [SerializeField] private Trans[] transitions;
 
     //Lerp variables
@@ -25,33 +29,15 @@ public class Transition : MonoBehaviour
         if (t) { return; }
         t = true;
         StartCoroutine(LerpTo(index));
-        /*
-        foreach (DUITrans DUITrans in transitions[index].DUItransitions)
-        {
-            DUITrans.Update(1);
-        }
-        foreach(UITrans UITrans in transitions[index].UItransitions)
-        {
-            UITrans.Update(1);
-        }
-
-        if (transitions[index].atomTransition != null)
-        {
-            transitions[index].atomTransition.atom.AdjustScale();
-            transitions[index].atomTransition.atom.Interactable = transitions[index].atomTransition.interactable;
-        }*/
-
-
-        if (transitions[index].atomTransition != null)
-        {
-            transitions[index].atomTransition.atom.Interactable = transitions[index].atomTransition.interactable;
-        }
     }
 
     private IEnumerator LerpTo(int index)
     {
         currLerpTime = 0;
-
+        foreach (PanelTrans UITrans in transitions[index].panelTransitions)
+        {
+            UITrans.SetTarget();
+        }
         while (currLerpTime < lerpTime)
         {
             currLerpTime += Time.deltaTime;
@@ -60,23 +46,24 @@ public class Transition : MonoBehaviour
                 currLerpTime = lerpTime;
             }
             float p = currLerpTime / lerpTime;
-            //p = p * p * (3f - 2f * p); //smooth step
+            p = p * p * (3f - 2f * p); //smooth step
             //p = p*p*p*(p*(p*6-15)+10); //smoother step
             //p = Mathf.Pow(p, 1f / 6f);
-            foreach (DUITrans DUITrans in transitions[index].DUItransitions)
+            foreach (DUITrans DUITrans in transitions[index].duiTransitions)
             {
                 DUITrans.Update(p);
             }
-            foreach (UITrans UITrans in transitions[index].UItransitions)
+            foreach (PanelTrans UITrans in transitions[index].panelTransitions)
             {
                 UITrans.Update(p);
             }
-            if (transitions[index].atomTransition != null)
-            {
-                transitions[index].atomTransition.atom.AdjustScale();
-            }
+
+            transitions[index].atomTransition.atom.AdjustScale();
+            
             yield return new WaitForEndOfFrame();
         }
+
+        transitions[index].atomTransition.atom.Interactable = transitions[index].atomTransition.interactable;
         t = false;
     }
 }
@@ -86,8 +73,8 @@ public class Trans
 {
     public string name;
 
-    public DUITrans[] DUItransitions;
-    public UITrans[] UItransitions;
+    public DUITrans[] duiTransitions;
+    public PanelTrans[] panelTransitions;
     public AtomTrans atomTransition;
 }
 
@@ -113,16 +100,32 @@ public class DUITrans
     }
 }
 
+public enum Direction
+{
+    Up, Down, Left, Right, Center
+}
+
 [System.Serializable]
-public class UITrans
+public class PanelTrans
 {
     public RectTransform rectTransform;
+    public Direction dir;
+    private Vector2 target;
 
-    public Vector2 position;
+    public void SetTarget()
+    { 
+        switch (dir)
+        {
+            case Direction.Up: target = Vector2.up * Screen.height; break;
+            case Direction.Down: target = Vector2.down * Screen.height; break;
+            case Direction.Left: target = Vector2.left * Screen.width; break;
+            case Direction.Right: target = Vector2.right * Screen.width; break;
+            case Direction.Center: target = Vector2.zero; break;
+        }  
+    }
 
     public void Update(float p)
     {
-        rectTransform.localPosition = Vector2.Lerp(rectTransform.localPosition, position, p);
+        rectTransform.localPosition = Vector2.Lerp(rectTransform.localPosition, target, p);
     }
-
 }
