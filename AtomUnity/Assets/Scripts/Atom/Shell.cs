@@ -21,6 +21,8 @@ namespace Atom
         private Color dBlockColor = new Color(0, 1f, 0.5f);
         private Color fBlockColor = new Color(0.2f, 0.5f, 0.9f);
 
+        private CircleDraw circleDraw;
+
         public float Radius
         {
             get { return radius; }
@@ -28,6 +30,7 @@ namespace Atom
             {
                 radius = value;
                 CalcSeperationDistance();
+                circleDraw.Draw(radius, 0.1f * scale);
             }
         }
 
@@ -55,6 +58,7 @@ namespace Atom
         private void Awake()
         {
             particles = new List<Particle>();
+            circleDraw = GetComponent<CircleDraw>();
         }
 
         /// <summary>
@@ -213,6 +217,10 @@ namespace Atom
                 //calculate force to maintain orbit
                 Vector2 forceToOrbit = new Vector2(-diffRadius.y, diffRadius.x).normalized * ORBIT_SPEED * scale;
 
+                //calculate force to z = 0;
+                Vector3 forceZ = Vector3.back * particles[i].PhysicsObj.Position.z;
+                particles[i].PhysicsObj.AddForce(forceZ);
+
                 //apply forces to the particles
                 particles[i].PhysicsObj.AddForce(forceToRadius + forceToOrbit);
 
@@ -269,7 +277,6 @@ namespace Atom
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.green;
-
             Gizmos.DrawWireSphere(transform.position, Radius);
         }
     }

@@ -36,7 +36,6 @@ namespace DUI
                 duias.Add(transform.GetChild(i).GetComponent<DUIAnchor>());
             }
 
-
             //calculate the offset between anchors
             Vector2 offset = new Vector2(layout == DUILayoutType.Horizontal ? 1.0f / (duias.Count) : 0,
                                          layout == DUILayoutType.Vertical ? 1.0f / (duias.Count) : 0);

@@ -100,14 +100,11 @@ namespace Atom
         public int Mass { get; }
         public bool Stable { get; }
         public float Abundance { get; }
-        public string FormalName { get; }
-
-        public Isotope(int mass, bool stable = false, float abundance = 0.0f, string formalName = "")
+        public Isotope(int mass, bool stable = false, float abundance = 0.0f)
         {
             Mass = mass;
             Stable = stable;
             Abundance = abundance;
-            FormalName = formalName;
         }
     }
 }

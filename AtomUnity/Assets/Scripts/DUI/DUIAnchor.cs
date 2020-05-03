@@ -14,10 +14,10 @@ namespace DUI
         [SerializeField] private Vector2 min;
         [SerializeField] private Vector2 max;
 
-        private Bounds bounds;
+        public Bounds Bounds { get; private set; }
+        public Rect Rect { get { return new Rect(Bounds.center, Bounds.size); } }
 
-        public Bounds Bounds { get { return bounds; } }
-        public Rect Rect { get { return new Rect(bounds.center, bounds.size); } }
+        DUIAnchor parentAnchor;
 
         public Vector2[] MinMax
         {
@@ -26,7 +26,6 @@ namespace DUI
             {
                 min = value[0];
                 max = value[1];
-                DUIAnchor parentAnchor = transform.parent.GetComponent<DUIAnchor>();
                 if (parentAnchor == null)
                     SetPosition(new Bounds(Vector2.zero, new Vector2(DUI.cameraWidth, DUI.cameraHeight) * 2));
                 else
@@ -34,10 +33,15 @@ namespace DUI
             }
         }
 
+        private void Awake()
+        {
+            parentAnchor = transform.parent.GetComponent<DUIAnchor>();
+        }
+
         private void Start()
         {
             //parent node starts the recursive call using the full camera space as bounds
-            if (transform.parent.GetComponent<DUIAnchor>() == null)
+            if (parentAnchor == null)
             {
                 SetPosition(new Bounds(Vector2.zero, new Vector2(DUI.cameraWidth, DUI.cameraHeight) * 2));
             }
@@ -51,19 +55,19 @@ namespace DUI
         {
 
             //calculate new bounds based on the min and max proportions
-            bounds = new Bounds(new Vector2(r.center.x + ((max.x + min.x - 1) / 2) * r.size.x,
+            Bounds = new Bounds(new Vector2(r.center.x + ((max.x + min.x - 1) / 2) * r.size.x,
                                              r.center.y + ((max.y + min.y - 1) / 2) * r.size.y),
                                 new Vector2(r.size.x * Mathf.Abs(max.x - min.x),
                                              r.size.y * Mathf.Abs(max.y - min.y)));
 
             //move to the new center position
-            transform.position = bounds.center;
+            transform.position = Bounds.center;
 
             //scale any UI sprites to match the bounds
             SpriteRenderer render = GetComponent<SpriteRenderer>();
             if (render != null)
             {
-                render.size = bounds.size;
+                render.size = Bounds.size;
             }
 
 
@@ -77,7 +81,7 @@ namespace DUI
             }
             foreach (DUIAnchor duia in duias)
             {
-                duia.SetPosition(bounds);
+                duia.SetPosition(Bounds);
             }
         }
 
@@ -98,7 +102,7 @@ namespace DUI
         protected void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.cyan;
-            Gizmos.DrawWireCube(bounds.center, bounds.size);
+            Gizmos.DrawWireCube(Bounds.center, Bounds.size);
         }
     }
 }

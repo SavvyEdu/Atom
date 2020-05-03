@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace DUI
+namespace DUI //Dimensional User Interface
 {
     public class DUI : MonoBehaviour
     {

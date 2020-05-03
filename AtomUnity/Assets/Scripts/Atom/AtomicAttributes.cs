@@ -18,8 +18,7 @@ namespace Atom
                 Isotope isotope = atom.Element.GetIsotope(atom.Nucleus.Mass);
                 if (isotope != null)
                 {
-                    formalNameUI.text = isotope.FormalName.Length > 0 ? isotope.FormalName 
-                                                                      : atom.Element.Name + "-" + atom.Nucleus.Mass;
+                    formalNameUI.text = atom.Element.Name + "-" + atom.Nucleus.Mass;
                     stableUI.text = isotope.Stable ? "Stable" : "Radioactive";
                 }
                 else
