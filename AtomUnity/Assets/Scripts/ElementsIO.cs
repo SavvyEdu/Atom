@@ -35,9 +35,23 @@ namespace Atom {
                         isotopes.Add(new Isotope(i - 9, abundance > 0, abundance));
                     }
                 }
-                elements[e - 1] = new Element(cells[1], cells[2], isotopes.ToArray());
+                elements[e - 1] = new Element(cells[1], cells[2], StringToElementType[cells[9]],isotopes.ToArray());
             }
             return elements;
         }
+
+        public static Dictionary<string, ElementType> StringToElementType = new Dictionary<string, ElementType>
+        {
+            { "Alkali Metal", ElementType.Alkali_Metal }, 
+            { "Alkaline Earth Metal", ElementType.Alkaline_Earth_Metal },
+            { "Lanthanide", ElementType.Lanthanide }, 
+            { "Actinide", ElementType.Actinide },
+            { "Transition Metal", ElementType.Transition_Metal }, 
+            { "Metalloid", ElementType.Metalloid },
+            { "Metal", ElementType.Metal },
+            { "Nonmetal", ElementType.Nonmetal }, 
+            { "Halogen", ElementType.Halogen },
+            { "Noble Gas", ElementType.Noble_Gas }
+        };
     }
 }

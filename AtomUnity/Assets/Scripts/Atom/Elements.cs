@@ -50,16 +50,31 @@ namespace Atom
         }
     }
 
+    public enum ElementType { 
+        Alkali_Metal, 
+        Alkaline_Earth_Metal,
+        Lanthanide,
+        Actinide,
+        Transition_Metal,
+        Metalloid, 
+        Nonmetal, 
+        Metal,
+        Halogen,
+        Noble_Gas,
+    }
+
     public class Element
     {
         public string Name { get; }
         public string Abbreviation { get; }
+        public ElementType Type { get; }
         public Isotope[] Isotopes { get; }
 
-        public Element(string name, string abbreviation, Isotope[] isotopes = null)
+        public Element(string name, string abbreviation, ElementType type, Isotope[] isotopes = null)
         {
             Name = name;
             Abbreviation = abbreviation;
+            Type = type;
             Isotopes = isotopes; 
         }
 

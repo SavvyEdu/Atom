@@ -3,7 +3,7 @@
 [RequireComponent(typeof(LineRenderer))]
 public class CircleDraw : MonoBehaviour
 {
-    private const int SEGMENTS = 30;
+    private const int SEGMENTS = 50;
     private LineRenderer lineRender;
 
     void Awake()
@@ -24,12 +24,12 @@ public class CircleDraw : MonoBehaviour
 
         for (int i = 0; i < (SEGMENTS + 1); i++)
         {
-            x = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
-            y = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
+            x = Mathf.Sin(angle) * radius;
+            y = Mathf.Cos(angle) * radius;
 
             lineRender.SetPosition(i, new Vector3(x, y, 0));
 
-            angle += (360f / SEGMENTS);
+            angle += Mathf.PI * 2 / SEGMENTS;
         }
     }
 }

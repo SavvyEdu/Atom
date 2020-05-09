@@ -16,10 +16,10 @@ namespace Atom
         private float radius; //desired orbital radius
 
         //colors for each of the different blocks 
-        private Color sBlockColor = new Color(0,0.3f, 0.3f);
-        private Color pBlockColor = new Color(0, 0.7f, 0.7f);
+        private Color sBlockColor = new Color(0,0.2f, 0.2f);
+        private Color pBlockColor = new Color(0.2f, 0.5f, 0.9f); 
         private Color dBlockColor = new Color(0, 1f, 0.5f);
-        private Color fBlockColor = new Color(0.2f, 0.5f, 0.9f);
+        private Color fBlockColor = new Color(0, 0.7f, 0.7f);
 
         private CircleDraw circleDraw;
 
@@ -217,12 +217,12 @@ namespace Atom
                 //calculate force to maintain orbit
                 Vector2 forceToOrbit = new Vector2(-diffRadius.y, diffRadius.x).normalized * ORBIT_SPEED * scale;
 
-                //calculate force to z = 0;
-                Vector3 forceZ = Vector3.back * particles[i].PhysicsObj.Position.z;
-                particles[i].PhysicsObj.AddForce(forceZ);
-
                 //apply forces to the particles
                 particles[i].PhysicsObj.AddForce(forceToRadius + forceToOrbit);
+
+                //calculate and apply force to z = 0;
+                Vector3 forceToZ = Vector3.back * particles[i].PhysicsObj.Position.z;
+                particles[i].PhysicsObj.AddForce(forceToZ);
 
                 for (int j = 0; j < i; j++)
                 {
@@ -252,18 +252,15 @@ namespace Atom
         {
             if (num <= 0) return;
 
-            Particle[] pA = Particles; // copy to array so list can be mutated
-            foreach (Particle particle in pA)
+            Particle particle;
+            for(; num > 0; num--)
             {
+                particle = particles[0]; //maitains ref after particle is removed
+                
                 //Run removal logic
                 RemoveParticle(particle);
                 particle.OnDeselect?.Invoke();
-
-                if (--num <= 0) return; //decrement num and check if done
             }
-
-            //trim remaining num from next shell
-            NextShell.TrimElectrons(num);
         }
 
         /// <summary> update the desired distance between particles</summary>

@@ -22,7 +22,8 @@ namespace Atom
         private float scale = 1;
         public bool Interactable { get { return interactable; } set { interactable = value; } }
         public Nucleus Nucleus { get; private set; }
-        public Shell OuterShell { get { return shells.Peek(); } }
+        public Shell OuterShell => shells.Peek();
+        public int ShellCount => shells.Count;
         public int ElectronCount
         {
             get

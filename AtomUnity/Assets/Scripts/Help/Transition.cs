@@ -21,7 +21,7 @@ public class Transition : MonoBehaviour
 
     private void Start()
     {
-        StartTransition(0);
+        SetTo(0);
     }
 
     public void StartTransition(int index)
@@ -63,6 +63,23 @@ public class Transition : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
+        transitions[index].atomTransition.atom.Interactable = transitions[index].atomTransition.interactable;
+        t = false;
+    }
+
+    private void SetTo(int index)
+    {
+        foreach (DUITrans DUITrans in transitions[index].duiTransitions)
+        {
+            DUITrans.Update(1);
+        }
+        foreach (PanelTrans UITrans in transitions[index].panelTransitions)
+        {
+            UITrans.SetTarget();
+            UITrans.Update(1);
+        }
+
+        transitions[index].atomTransition.atom.AdjustScale();
         transitions[index].atomTransition.atom.Interactable = transitions[index].atomTransition.interactable;
         t = false;
     }
