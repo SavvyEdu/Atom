@@ -40,7 +40,7 @@ namespace Atom
                         b.onClick.AddListener(() => SetElement(protonCount));
                     }
 
-                    b.image.color = ColorFromType(element.Type); //TODO: better color scheme
+                    b.image.color = ElementTypeUtil.ColorFromType(element.Type); //TODO: better color scheme
                 }
             }
         }
@@ -54,28 +54,6 @@ namespace Atom
             if(atom != null)
             {
                 atom.ForceToCommon(protonCount);
-            }
-        }
-
-        private Color ColorFromType(ElementType type)
-        {
-            switch (type)
-            {
-                case ElementType.Alkali_Metal: return new Color(0.0f, 0.2f, 0.2f);
-                case ElementType.Alkaline_Earth_Metal: return new Color(0.1f, 0.35f, 0.35f);
-
-                case ElementType.Lanthanide: return new Color(0.0f, 0.7f, 0.7f); 
-                case ElementType.Actinide: return new Color(0.1f, 0.6f, 0.6f); 
-
-                case ElementType.Transition_Metal: return new Color(0, 0.8f, 0.5f);
-
-                case ElementType.Metal: return new Color(0.0f, 0.7f, 1.0f);
-                case ElementType.Metalloid: return new Color(0.1f, 0.5f, 0.9f);
-                case ElementType.Nonmetal: return new Color(0.2f, 0.3f, 0.9f);
-                case ElementType.Halogen: return new Color(0.1f, 0.15f, 0.7f);
-                case ElementType.Noble_Gas: return new Color(0.0f, 0.0f, 0.5f);
-               
-                default: return new Color(0.0f, 0.0f, 0.0f);
             }
         }
     }

@@ -8,6 +8,8 @@ namespace Atom
         [SerializeField] private Atom atom;
         [SerializeField] private Text formalNameUI;
         [SerializeField] private Text stableUI;
+        [SerializeField] private Text typeUI;
+        [SerializeField] private Image typeImg;
 
         private void Update()
         {
@@ -24,12 +26,15 @@ namespace Atom
                     formalNameUI.text = "Not Isotope";
                     stableUI.text = "Radioactive";
                 }
-
+                typeUI.text = atom.Element.Type.ToString();
+                typeImg.color = ElementTypeUtil.ColorFromType(atom.Element.Type);
             }
             else
             {
                 formalNameUI.text = "";
                 stableUI.text = "";
+                typeUI.text = "";
+                typeImg.color = Color.black;
             }
         }
     }
