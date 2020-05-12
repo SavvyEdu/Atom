@@ -3313,7 +3313,7 @@ GameObject:
   - component: {fileID: 371788728}
   - component: {fileID: 371788727}
   m_Layer: 5
-  m_Name: Stable
+  m_Name: Type
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3369,7 +3369,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Stable
+  m_Text: Metal
 --- !u!222 &371788728
 CanvasRenderer:
   m_ObjectHideFlags: 0

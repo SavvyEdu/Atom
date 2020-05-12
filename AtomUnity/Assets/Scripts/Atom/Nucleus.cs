@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Atom.Physics;
+using System.Threading.Tasks;
 
 namespace Atom
 {
@@ -13,7 +14,7 @@ namespace Atom
         /// </summary>
 
         private const float PARTICLE_SPEED = 1.2f; //magnitude of force to center
-        private const float ROTATION_SPEED = 20; //degees to spin 
+        private const float ROTATION_SPEED = 20; //degees to spin per second
 
         private List<Particle> particles; //list of all particles in nucleus
         private float scale;
@@ -159,21 +160,27 @@ namespace Atom
         void Update()
         {
             //slowly spin the nucleus
-            transform.Rotate(Vector3.up, ROTATION_SPEED * Time.deltaTime);
+            if (Settings.ORBIT)
+            {
+                transform.Rotate(Vector3.up, ROTATION_SPEED * Time.deltaTime);
+            }        
         }
 
         private void FixedUpdate()
         {
-            Vector3 forceToOrigin = origin - transform.localPosition;
+            Vector3 forceToOrigin = /*Vector3.zero*/ - transform.localPosition;
             physicsObject.AddForce(forceToOrigin);
-            if (Shake)
+            if (Shake && Settings.SHAKE)
             {
                 physicsObject.AddForce(Random.insideUnitSphere * scale);
             }
-            for (int i = 0, len = particles.Count; i < len; i++)
-            {
+
+            Vector3 origin = transform.position;
+            Parallel.For(0, particles.Count, i => { //greatly speeds up the calculation for higher period elements
+            //for (int i = 0, len = particles.Count; i < len; i++) {
+            //{
                 //find the distance from origin
-                Vector3 diffOrgin = transform.position - particles[i].PhysicsObj.Position;
+                Vector3 diffOrgin = origin - particles[i].PhysicsObj.Position;
                 //calculate the force to center ( clamp is used so particles slow near center
                 Vector3 forceToCenter = Vector3.ClampMagnitude(diffOrgin.normalized * (PARTICLE_SPEED * scale), diffOrgin.sqrMagnitude);
                 particles[i].PhysicsObj.AddForce(forceToCenter);
@@ -184,7 +191,7 @@ namespace Atom
                     Vector3 diffOther = particles[i].PhysicsObj.Position - particles[j].PhysicsObj.Position;
 
                     //rare occurance, but seperate from identical other
-                    if (diffOther.sqrMagnitude < 0.0001f) { particles[i].PhysicsObj.AddForce(Random.insideUnitSphere); }
+                    if (diffOther.sqrMagnitude < 0.0001f) { particles[i].PhysicsObj.AddForce(Vector3.one * Mathf.Epsilon); }
 
                     //calculate the amount of overlap
                     float overlap = diffOther.magnitude - (2* particles[i].Radius ); //radius is the same for both
@@ -199,7 +206,8 @@ namespace Atom
                     }
                 }
                 
-            }
+            //}
+            });
         }
 
         private void OnDrawGizmosSelected()

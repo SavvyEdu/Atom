@@ -17,7 +17,9 @@ namespace Atom
         {
             for (int i = 0; i < num; i++)
             {
-                Instantiate(ProtonPrefab, transform.GetChild(0)).GetComponent<Proton>().OnDeselect?.Invoke();
+                Proton obj = Instantiate(ProtonPrefab, transform.GetChild(0)).GetComponent<Proton>();
+                obj.PhysicsObj.AddForce(Random.insideUnitSphere); //inject some random offset
+                obj.OnDeselect?.Invoke();
             }
         }
 
@@ -25,7 +27,9 @@ namespace Atom
         {
             for (int i = 0; i < num; i++)
             {
-                Instantiate(NeutronPrefab, transform.GetChild(1)).GetComponent<Neutron>().OnDeselect?.Invoke();
+                Neutron obj = Instantiate(NeutronPrefab, transform.GetChild(1)).GetComponent<Neutron>();
+                obj.PhysicsObj.AddForce(Random.insideUnitSphere); //inject some random offset
+                obj.OnDeselect?.Invoke();
             }
         }
 
@@ -33,7 +37,9 @@ namespace Atom
         {
             for (int i = 0; i < num; i++)
             {
-                Instantiate(ElectronPrefab, transform.GetChild(2)).GetComponent<Electron>().OnDeselect?.Invoke();
+                Electron obj = Instantiate(ElectronPrefab, transform.GetChild(2)).GetComponent<Electron>();
+                obj.PhysicsObj.AddForce(Random.insideUnitSphere); //inject some random offset
+                obj.OnDeselect?.Invoke();
             }
         }
         /// <summary>

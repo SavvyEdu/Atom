@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Events;
 using Atom.Physics;
 using DUI;
@@ -21,9 +21,13 @@ namespace Atom
         protected static Atom atom; //static ref to the Atom
 
         //get and set the radius in Unity Units
+        private float radius;
         public float Radius {
-            get { return transform.localScale.x / 2; }
-            set { transform.localScale = Vector3.one * 2.0f * value; }
+            get { return radius; }
+            set {
+                radius = value;
+                transform.localScale = Vector3.one * 2.0f * radius; 
+            }
         }
 
         public PhysicsObject PhysicsObj { get; private set; }

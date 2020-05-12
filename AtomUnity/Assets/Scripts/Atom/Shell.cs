@@ -197,12 +197,15 @@ namespace Atom
         //Recolors the particles
         private void ColorParticles()
         {
-            for(int i = 0, len = ElectronCount; i< len; i++)
+            if (Settings.COLOR)
             {
-                if (i < 2) particles[i].GetComponent<Renderer>().material.color = sBlockColor;
-                else if (i < 8) particles[i].GetComponent<Renderer>().material.color = pBlockColor;
-                else if (i < 18) particles[i].GetComponent<Renderer>().material.color = dBlockColor;
-                else particles[i].GetComponent<Renderer>().material.color = fBlockColor;
+                for (int i = 0, len = ElectronCount; i < len; i++)
+                {
+                    if (i < 2) particles[i].GetComponent<Renderer>().material.color = sBlockColor;
+                    else if (i < 8) particles[i].GetComponent<Renderer>().material.color = pBlockColor;
+                    else if (i < 18) particles[i].GetComponent<Renderer>().material.color = dBlockColor;
+                    else particles[i].GetComponent<Renderer>().material.color = fBlockColor;
+                }
             }
         }
 
@@ -213,14 +216,16 @@ namespace Atom
                 //calculate force to get into orbit
                 Vector2 diffRadius = transform.position - particles[i].PhysicsObj.Position;
                 Vector2 forceToRadius = diffRadius.normalized * (diffRadius.sqrMagnitude - Radius*Radius) * ALIGNMENT_SPEED;
+                particles[i].PhysicsObj.AddForce(forceToRadius);
 
                 //calculate force to maintain orbit
-                Vector2 forceToOrbit = new Vector2(-diffRadius.y, diffRadius.x).normalized * ORBIT_SPEED * scale;
+                if (Settings.ORBIT)
+                {
+                    Vector2 forceToOrbit = new Vector2(-diffRadius.y, diffRadius.x).normalized * ORBIT_SPEED * scale;
+                    particles[i].PhysicsObj.AddForce(forceToOrbit);
+                }
 
-                //apply forces to the particles
-                particles[i].PhysicsObj.AddForce(forceToRadius + forceToOrbit);
-
-                //calculate and apply force to z = 0;
+                //calculate force to z = 0;
                 Vector3 forceToZ = Vector3.back * particles[i].PhysicsObj.Position.z;
                 particles[i].PhysicsObj.AddForce(forceToZ);
 
