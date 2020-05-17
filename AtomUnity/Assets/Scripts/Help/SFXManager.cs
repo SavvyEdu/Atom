@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(Canvas))] //not necessary but prefered to be on canvas
 [RequireComponent(typeof(AudioSource))]
-public class ButtonClickManager : MonoBehaviour
+public class SFXManager : MonoBehaviour
 {
     [SerializeField] private AudioClip buttonClickSFX;
     [SerializeField] private AudioClip toggleClickSFX;
 
-    private AudioSource source;
+    private AudioSource source = null;
 
     private void Awake()
     {
@@ -19,12 +19,14 @@ public class ButtonClickManager : MonoBehaviour
 
     private void Start()
     {
+        Adjust();
+
         //get ALL the buttons
         Button[] buttons = GetComponentsInChildren<Button>(true); 
         foreach(Button b in buttons)
         {
             //play button SFX onClick
-            b.onClick.AddListener(() => source.PlayOneShot(buttonClickSFX));
+            b.onClick.AddListener(ButtonClick);
         }
 
         //get ALL the toggles
@@ -32,7 +34,24 @@ public class ButtonClickManager : MonoBehaviour
         foreach (Toggle t in toggles)
         {
             //play toggle SFX onClick
-            t.onValueChanged.AddListener((bool b) => source.PlayOneShot(toggleClickSFX));
+            t.onValueChanged.AddListener(ToggleClick);
         }
+    }
+
+    private void ButtonClick()
+    {
+        Adjust();
+        source.PlayOneShot(buttonClickSFX);
+    }
+
+    private void ToggleClick(bool b)
+    {
+        Adjust();
+        source.PlayOneShot(toggleClickSFX);
+    }
+
+    private void Adjust()
+    {
+        source.volume = Settings.MUTE ? 0 : 0.1f * Settings.SFX_VOLUME;
     }
 }
