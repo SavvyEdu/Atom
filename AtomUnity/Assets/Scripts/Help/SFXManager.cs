@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Canvas))] //not necessary but prefered to be on canvas
@@ -9,6 +11,7 @@ public class SFXManager : MonoBehaviour
 {
     [SerializeField] private AudioClip buttonClickSFX;
     [SerializeField] private AudioClip toggleClickSFX;
+    [SerializeField] private AudioClip sliderClickSFX;
 
     private AudioSource source = null;
 
@@ -36,6 +39,16 @@ public class SFXManager : MonoBehaviour
             //play toggle SFX onClick
             t.onValueChanged.AddListener(ToggleClick);
         }
+
+        //get ALL the toggles
+        Slider[] slider = GetComponentsInChildren<Slider>(true);
+        foreach (Slider s in slider)
+        {
+            //play toggle SFX onClick
+            pointerHandle fx = s.gameObject.AddComponent<pointerHandle>();
+            fx.upAction += SliderClick;
+            fx.downAction += SliderClick;
+        }
     }
 
     private void ButtonClick()
@@ -50,8 +63,32 @@ public class SFXManager : MonoBehaviour
         source.PlayOneShot(toggleClickSFX);
     }
 
+    private void SliderClick()
+    {
+        Adjust();
+        source.PlayOneShot(sliderClickSFX);
+        
+    }
+
     private void Adjust()
     {
         source.volume = Settings.MUTE ? 0 : 0.1f * Settings.SFX_VOLUME;
     }
+
+    private class pointerHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+    {
+        public Action downAction;
+        public Action upAction;
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            downAction?.Invoke();
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            upAction?.Invoke();
+        }
+    }
+
 }
