@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(Canvas))] //not necessary but prefered to be on canvas
 [RequireComponent(typeof(AudioSource))]
-public class SFXManager : MonoBehaviour
+public class SFXManagerUI : MonoBehaviour
 {
     [SerializeField] private AudioClip buttonClickSFX;
     [SerializeField] private AudioClip toggleClickSFX;
@@ -45,7 +45,7 @@ public class SFXManager : MonoBehaviour
         foreach (Slider s in slider)
         {
             //play toggle SFX onClick
-            pointerHandle fx = s.gameObject.AddComponent<pointerHandle>();
+            PointerHandle fx = s.gameObject.AddComponent<PointerHandle>();
             fx.upAction += SliderClick;
             fx.downAction += SliderClick;
         }
@@ -75,7 +75,7 @@ public class SFXManager : MonoBehaviour
         source.volume = Settings.MUTE ? 0 : 0.1f * Settings.SFX_VOLUME;
     }
 
-    private class pointerHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+    private class PointerHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         public Action downAction;
         public Action upAction;
