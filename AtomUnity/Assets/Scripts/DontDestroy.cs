@@ -13,7 +13,11 @@ public class DontDestroy : MonoBehaviour
 
     private void Awake()
     {
-        if (!objects.Contains(gameObject.name)){
+        if (objects.Contains(gameObject.name)){
+            Destroy(gameObject);
+        }
+        else
+        {
             objects.Add(gameObject.name);
             DontDestroyOnLoad(gameObject);
         }

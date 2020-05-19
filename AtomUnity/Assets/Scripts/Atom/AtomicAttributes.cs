@@ -26,7 +26,7 @@ namespace Atom
                     formalNameUI.text = "Not Isotope";
                     stableUI.text = "Radioactive";
                 }
-                typeUI.text = atom.Element.Type.ToString();
+                typeUI.text = atom.Element.Type.ToString().Replace('_', ' ');
                 typeImg.color = ElementTypeUtil.ColorFromType(atom.Element.Type);
             }
             else

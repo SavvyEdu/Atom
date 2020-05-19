@@ -12628,6 +12628,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonClickSFX: {fileID: 8300000, guid: 5b3212571b59bd841865c6412e1b933a, type: 3}
   toggleClickSFX: {fileID: 8300000, guid: e4f1219b1ea2d6441a0451192431a9a1, type: 3}
+  sliderClickSFX: {fileID: 0}
 --- !u!224 &1368484826 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4360076512377911590, guid: 416cc6e7477ac0b4ba364588c3614747,
