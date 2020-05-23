@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace DUI //Dimensional User Interface
 {
@@ -34,6 +35,19 @@ namespace DUI //Dimensional User Interface
 
             //calculate width based on height
             cameraWidth = cameraHeight * Screen.width / Screen.height;
+
+            //recursively call set position on any child objects
+            List<DUIAnchor> duias = new List<DUIAnchor>();
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                DUIAnchor a = transform.GetChild(i).GetComponent<DUIAnchor>();
+                if (a != null)
+                    duias.Add(a);
+            }
+            foreach (DUIAnchor duia in duias)
+            {
+                duia.SetPosition(new Bounds(Vector2.zero, new Vector2(DUI.cameraWidth, DUI.cameraHeight) * 2));
+            }
         }
 
         public static bool Contains(Vector2 pos)

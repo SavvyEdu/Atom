@@ -17,15 +17,6 @@ namespace DUI
 
         [SerializeField] private DUILayoutType layout;
 
-        private void Awake()
-        {
-            //parent node starts the recursive call using the full camera space as bounds
-            if (transform.parent.GetComponent<DUILayout>() == null)
-            {
-                SetAnchors();
-            }
-        }
-
         public void SetAnchors()
         {
             anchor = GetComponent<DUIAnchor>();

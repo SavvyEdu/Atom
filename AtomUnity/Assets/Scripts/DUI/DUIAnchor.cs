@@ -43,7 +43,7 @@ namespace DUI
             //parent node starts the recursive call using the full camera space as bounds
             if (parentAnchor == null)
             {
-                SetPosition(new Bounds(Vector2.zero, new Vector2(DUI.cameraWidth, DUI.cameraHeight) * 2));
+                //SetPosition(new Bounds(Vector2.zero, new Vector2(DUI.cameraWidth, DUI.cameraHeight) * 2));
             }
         }
 
@@ -70,6 +70,12 @@ namespace DUI
                 render.size = Bounds.size;
             }
 
+            //set the layout for this Anchor
+            DUILayout layout = GetComponent<DUILayout>();
+            if (layout)
+            {
+                layout.SetAnchors();
+            }
 
             //recursively call set position on any child objects
             List<DUIAnchor> duias = new List<DUIAnchor>();

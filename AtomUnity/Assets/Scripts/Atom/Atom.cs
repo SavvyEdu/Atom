@@ -23,7 +23,7 @@ namespace Atom
         private float scale = 1;
         public bool Interactable { get { return interactable; } set { interactable = value; } }
         public Nucleus Nucleus { get; private set; }
-        public Shell OuterShell => shells.Peek();
+        public Shell OuterShell => shells.Count > 0 ? shells.Peek() : null;
         public int ShellCount => shells.Count;
         public int ElectronCount
         {
@@ -211,7 +211,7 @@ namespace Atom
         }
 
         /// <summary>
-        /// et the atom to the most common form of the current element
+        /// set the atom to the most common form of the current element
         /// </summary>
         public void ForceToCommon()
         {
