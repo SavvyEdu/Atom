@@ -7,10 +7,8 @@ using UnityEngine.UI;
 public class AtomsAndVoid : ModuleBase
 {
     [SerializeField] private Image stickImage;
-    public void CutClick() 
-    {
-        stickImage.fillAmount = stickImage.fillAmount / 2;
-    }
+
+    [SerializeField] private GameObject KanadaAtom;
 
     [SerializeField] private GameObject VoidSim;
     private DUIAnchor VoidSimAnchor;
@@ -25,19 +23,34 @@ public class AtomsAndVoid : ModuleBase
         voidSimObjects = new List<GameObject>();
         VoidAtomTemplate.SetActive(false);
 
+        KanadaAtom.SetActive(false);
+
         OnChange += Change;
+    }
+
+    public void CutClick()
+    {
+        stickImage.fillAmount = stickImage.fillAmount / 2;
     }
 
     private void Change(int index)
     {
-        if(index == 2)
+        switch (index)
         {
-            simulateVoid = false;
-        }
-        if(index == 3)
-        {
-            simulateVoid = true;
-            StartCoroutine(RunVoidSim());
+            case 3:
+                KanadaAtom.SetActive(false);
+                break;
+            case 4:
+                KanadaAtom.SetActive(true);
+                break;
+            case 5:
+                KanadaAtom.SetActive(false);
+                simulateVoid = false;
+                break;
+            case 6:
+                simulateVoid = true;
+                StartCoroutine(RunVoidSim());
+                break;
         }
     }
 
