@@ -9,7 +9,7 @@ public class MusicManager : MonoBehaviour
 
     public void SetVolume()
     {
-        source.volume = Settings.MUTE ? 0 : 0.2f * Settings.MUSIC_VOLUME;
+        source.volume = Settings.MUTE ? 0 : 0.3f * Settings.MUSIC_VOLUME;
     }
 
     private void Awake()

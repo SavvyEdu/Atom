@@ -1,19 +1,26 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneChange : MonoBehaviour
 {
     [SerializeField] private string sceneName;
+    [SerializeField] private ConfirmBox confirm;
 
     public void ChangeScene()
     {
-        SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        ChangeScene(sceneName); //use editor value
     }
 
     public void ChangeScene(string sceneName)
     {
-        SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-    }
-
-    
+        if (confirm != null){
+            confirm.ShowConfirm(() => SceneManager.LoadScene(sceneName, LoadSceneMode.Single));
+        }
+        else
+        {
+            SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        }
+        
+    }        
 }
