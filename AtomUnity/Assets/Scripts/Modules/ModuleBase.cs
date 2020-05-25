@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class ModuleBase : MonoBehaviour
+public class ModuleBase : MonoBehaviour
 {
     [SerializeField] private Button BackButton;
     [SerializeField] private Button NextButton;
