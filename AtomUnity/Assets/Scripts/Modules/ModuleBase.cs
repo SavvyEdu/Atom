@@ -26,23 +26,29 @@ public abstract class ModuleBase : MonoBehaviour
             g.SetActive(false);
         }
         sequence[0].SetActive(true);
+
+        BackButton.interactable = false;
     }
 
     public void BackClick()
     {
-        if (index == 0) { return; }
         sequence[index].SetActive(false);
         sequence[index - 1].SetActive(true);
         index--;
         OnChange?.Invoke(index);
+
+        if (index == 0) { BackButton.interactable = false; }
+        if (index == sequence.Length - 2) { NextButton.interactable = true; }
     }
 
     public void NextClick()
     {
-        if (index == sequence.Length - 1) { return; }
         sequence[index].SetActive(false);
         sequence[index + 1].SetActive(true);
         index++;
         OnChange?.Invoke(index);
+
+        if (index == 1) { BackButton.interactable = true; }
+        if (index == sequence.Length - 1) { NextButton.interactable = false; }
     }
 }

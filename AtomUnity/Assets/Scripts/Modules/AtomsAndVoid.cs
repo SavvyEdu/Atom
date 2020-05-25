@@ -41,13 +41,14 @@ public class AtomsAndVoid : ModuleBase
                 KanadaAtom.SetActive(false);
                 break;
             case 4:
+            case 5:
                 KanadaAtom.SetActive(true);
                 break;
-            case 5:
+            case 6:
                 KanadaAtom.SetActive(false);
                 simulateVoid = false;
                 break;
-            case 6:
+            case 7:
                 simulateVoid = true;
                 StartCoroutine(RunVoidSim());
                 break;
