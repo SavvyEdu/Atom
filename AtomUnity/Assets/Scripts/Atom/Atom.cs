@@ -224,6 +224,10 @@ namespace Atom
         /// <param name="protonCount">atomic number of the element to set</param>
         public void ForceToCommon(int protonCount)
         {
+            //temporarily remove ingteractivity to force particles
+            bool wasInteractable = interactable;
+            interactable = false;
+
             //add or remove neutrons to match atomic number
             int protonDiff = protonCount - Nucleus.ProtonCount;
             workbench.NewAutoProton(protonDiff);
@@ -237,7 +241,7 @@ namespace Atom
                 Nucleus.MassMax = element.MaxIsotope;
                 Nucleus.MassMin = element.MinIsotope;
 
-                Isotope common = element.GetCommon();
+                Isotope common = element.Common;
                 if(common != null)
                 {
                     //add or remove neutrons to match mass
@@ -262,6 +266,8 @@ namespace Atom
             int electronDiff = protonCount - ElectronCount;
             workbench.NewAutoElectron(electronDiff);
             OuterShell.TrimElectrons(-electronDiff);
+
+            interactable = wasInteractable; //revert interactable state
 
             AdjustScale();
         }

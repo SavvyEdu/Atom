@@ -108,13 +108,15 @@ namespace Atom
         public string Abbreviation { get; }
         public ElementType Type { get; }
         public Isotope[] Isotopes { get; }
+        public Isotope Common { get; }
 
         public Element(string name, string abbreviation, ElementType type, Isotope[] isotopes = null)
         {
             Name = name;
             Abbreviation = abbreviation;
             Type = type;
-            Isotopes = isotopes; 
+            Isotopes = isotopes;
+            Common = FindCommon();
         }
 
         public int MaxIsotope { get { return Isotopes[Isotopes.Length - 1].Mass; } }
@@ -135,9 +137,11 @@ namespace Atom
         /// gets the most common isotope of the element
         /// </summary>
         /// <returns></returns>
-        public Isotope GetCommon()
+        private Isotope FindCommon()
         {
             Isotope common = null;
+
+            //find the stable isotope with the greatest abundance
             foreach(Isotope isotope in Isotopes)
             {
                 if(isotope.Stable && (common == null || isotope.Abundance > common.Abundance))
@@ -145,6 +149,15 @@ namespace Atom
                     common = isotope;
                 }
             }
+
+            //no stable isotopes, use middle isotope
+            if(common == null)
+            {
+                //round up
+                int isotopeIndex = Mathf.CeilToInt((MaxIsotope - MinIsotope) / 2.0f);
+                common = Isotopes[isotopeIndex];
+            }
+
             return common;
         }
     }

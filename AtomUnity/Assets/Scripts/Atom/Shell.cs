@@ -6,9 +6,9 @@ namespace Atom
 {
     public class Shell : MonoBehaviour
     {
-        private const float ALIGNMENT_SPEED = 1.0f; //magnitude of force to get into orbit
+        private const float ALIGNMENT_SPEED = 2.0f; //magnitude of force to get into orbit
         private const float ORBIT_SPEED = 0.05f; //magnitude of orbital force
-        private const float SEPERATION_SPEED = 7.0f; //magnitude of speration force
+        private const float SEPERATION_SPEED = 5.0f; //magnitude of speration force
 
         private List<Particle> particles; //list of all the particles in this shell
         private float seperationDistance; //how far apart each electron should be
