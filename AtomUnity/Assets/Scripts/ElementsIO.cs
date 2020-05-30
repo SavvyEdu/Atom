@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using Atom.Util;
 
 namespace Atom {
     public class ElementsIO
@@ -23,19 +24,23 @@ namespace Atom {
             {
                 string[] cells = lines[e].Split(',');
 
-
                 isotopes.Clear();
 
                 //get isotope abundances
-                for (int i = 10; i < 304; i++)
+                int isotopeStartIndex = 10;
+                for (int i = isotopeStartIndex; i < isotopeStartIndex + 294; i++)
                 {
                     float abundance;
                     if (float.TryParse(cells[i], out abundance))
                     {
-                        isotopes.Add(new Isotope(i - 9, abundance > 0, abundance));
+                        isotopes.Add(new Isotope(i - isotopeStartIndex - 1, abundance > 0, abundance));
                     }
                 }
-                elements[e - 1] = new Element(cells[1], cells[2], ElementTypeUtil.StringToElementType[cells[9]], isotopes.ToArray());
+
+                BlockType block = BlockTypeUtil.StringToBlockType[cells[4]];
+                ElementType type = ElementTypeUtil.StringToElementType[cells[9]];
+
+                elements[e - 1] = new Element(cells[1], cells[2], type, block, isotopes.ToArray());
             }
             return elements;
         }

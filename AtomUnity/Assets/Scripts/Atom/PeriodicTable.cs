@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.UI;
+using Atom.Util;
 
 namespace Atom
 {
@@ -40,7 +41,8 @@ namespace Atom
                         b.onClick.AddListener(() => SetElement(protonCount));
                     }
 
-                    b.image.color = ElementTypeUtil.ColorFromType(element.Type); //TODO: better color scheme
+                    b.image.color = BlockTypeUtil.ColorFromBlock(element.Block);
+                    //b.image.color = ElementTypeUtil.ColorFromType(element.Type); //TODO: better color scheme
                 }
             }
         }

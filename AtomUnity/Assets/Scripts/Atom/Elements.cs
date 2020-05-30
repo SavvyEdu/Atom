@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Atom.Util;
 
 namespace Atom
 {
@@ -50,71 +51,21 @@ namespace Atom
         }
     }
 
-    public enum ElementType { 
-        Alkali_Metal, 
-        Alkaline_Earth_Metal,
-        Lanthanide,
-        Actinide,
-        Transition_Metal,
-        Metalloid, 
-        Nonmetal, 
-        Metal,
-        Halogen,
-        Noble_Gas,
-    }
-
-    public struct ElementTypeUtil
-    {
-        public static Color ColorFromType(ElementType type)
-        {
-            switch (type)
-            {
-                case ElementType.Alkali_Metal: return new Color(0.0f, 0.2f, 0.2f);
-                case ElementType.Alkaline_Earth_Metal: return new Color(0.1f, 0.35f, 0.35f);
-
-                case ElementType.Lanthanide: return new Color(0.0f, 0.7f, 0.7f);
-                case ElementType.Actinide: return new Color(0.1f, 0.6f, 0.6f);
-
-                case ElementType.Transition_Metal: return new Color(0, 0.8f, 0.5f);
-
-                case ElementType.Metal: return new Color(0.0f, 0.7f, 1.0f);
-                case ElementType.Metalloid: return new Color(0.1f, 0.5f, 0.9f);
-                case ElementType.Nonmetal: return new Color(0.2f, 0.3f, 0.9f);
-                case ElementType.Halogen: return new Color(0.1f, 0.15f, 0.7f);
-                case ElementType.Noble_Gas: return new Color(0.0f, 0.0f, 0.5f);
-
-                default: return new Color(0.0f, 0.0f, 0.0f);
-            }
-        }
-
-        public static Dictionary<string, ElementType> StringToElementType = new Dictionary<string, ElementType>
-        {
-            { "Alkali Metal", ElementType.Alkali_Metal },
-            { "Alkaline Earth Metal", ElementType.Alkaline_Earth_Metal },
-            { "Lanthanide", ElementType.Lanthanide },
-            { "Actinide", ElementType.Actinide },
-            { "Transition Metal", ElementType.Transition_Metal },
-            { "Metalloid", ElementType.Metalloid },
-            { "Metal", ElementType.Metal },
-            { "Nonmetal", ElementType.Nonmetal },
-            { "Halogen", ElementType.Halogen },
-            { "Noble Gas", ElementType.Noble_Gas }
-        };
-    }
-
     public class Element
     {
         public string Name { get; }
         public string Abbreviation { get; }
+        public BlockType Block { get; }
         public ElementType Type { get; }
         public Isotope[] Isotopes { get; }
         public Isotope Common { get; }
 
-        public Element(string name, string abbreviation, ElementType type, Isotope[] isotopes = null)
+        public Element(string name, string abbreviation, ElementType type, BlockType block, Isotope[] isotopes = null)
         {
             Name = name;
             Abbreviation = abbreviation;
             Type = type;
+            Block = block;
             Isotopes = isotopes;
             Common = FindCommon();
         }

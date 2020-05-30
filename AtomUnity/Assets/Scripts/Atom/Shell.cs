@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Atom.Util;
 
 namespace Atom
 {
@@ -14,12 +15,6 @@ namespace Atom
         private float seperationDistance; //how far apart each electron should be
         private float scale = 1;
         private float radius; //desired orbital radius
-
-        //colors for each of the different blocks 
-        private Color sBlockColor = new Color(0,0.2f, 0.2f);
-        private Color pBlockColor = new Color(0.2f, 0.5f, 0.9f); 
-        private Color dBlockColor = new Color(0, 1f, 0.5f);
-        private Color fBlockColor = new Color(0, 0.7f, 0.7f);
 
         private CircleDraw circleDraw;
 
@@ -201,10 +196,10 @@ namespace Atom
             {
                 for (int i = 0, len = ElectronCount; i < len; i++)
                 {
-                    if (i < 2) particles[i].GetComponent<Renderer>().material.color = sBlockColor;
-                    else if (i < 8) particles[i].GetComponent<Renderer>().material.color = pBlockColor;
-                    else if (i < 18) particles[i].GetComponent<Renderer>().material.color = dBlockColor;
-                    else particles[i].GetComponent<Renderer>().material.color = fBlockColor;
+                    if (i < 2) particles[i].GetComponent<Renderer>().material.color = BlockTypeUtil.ColorFromBlock(BlockType.sBlock);
+                    else if (i < 8) particles[i].GetComponent<Renderer>().material.color = BlockTypeUtil.ColorFromBlock(BlockType.pBlock);
+                    else if (i < 18) particles[i].GetComponent<Renderer>().material.color = BlockTypeUtil.ColorFromBlock(BlockType.dBlock);
+                    else particles[i].GetComponent<Renderer>().material.color = BlockTypeUtil.ColorFromBlock(BlockType.fBlock);
                 }
             }
         }
