@@ -98,5 +98,13 @@ namespace Atom.Util
             { "d", BlockType.dBlock },
             { "f", BlockType.fBlock }
         };
+
+        public static Dictionary<BlockType, string> BlockTypeToString = new Dictionary<BlockType, string>
+        {
+            { BlockType.sBlock,  "s" },
+            { BlockType.pBlock, "p" },
+            { BlockType.dBlock, "d" },
+            { BlockType.fBlock, "f"}
+        };
     }
 }

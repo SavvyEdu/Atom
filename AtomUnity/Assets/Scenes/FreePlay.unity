@@ -12086,6 +12086,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   atom: {fileID: 1619073828}
+  displayType: 1
 --- !u!114 &1335240689
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,11 +7,15 @@ using Atom.Util;
 
 namespace Atom
 {
+    public enum PeriodicTableDisplayType { Block, Type, BlockCount }
+
     public class PeriodicTable : MonoBehaviour
     {
         [SerializeField] private Atom atom;
         private Text[] texts;
         public Element Element { get; private set; }
+
+        [SerializeField] private PeriodicTableDisplayType displayType;
 
         private void Awake()
         {
@@ -31,18 +35,29 @@ namespace Atom
                 Element element = Elements.GetElement(protonCount); //get bound element
                 if (element != null)
                 {
-                    texts[t].text = protonCount.ToString();
-                    texts[t+1].text = element.Abbreviation;
-
                     //Hook up button to show the element data
-                    Button b = texts[t+1].GetComponentInParent<Button>();
-                    if(b != null)
-                    {
-                        b.onClick.AddListener(() => SetElement(protonCount));
-                    }
+                    Button b = texts[t + 1].GetComponentInParent<Button>();
 
-                    b.image.color = BlockTypeUtil.ColorFromBlock(element.Block);
-                    //b.image.color = ElementTypeUtil.ColorFromType(element.Type); //TODO: better color scheme
+                    switch (displayType)
+                    {
+                        case PeriodicTableDisplayType.BlockCount:
+                            texts[t].text = "";
+                            texts[t + 1].text = BlockTypeUtil.BlockTypeToString[element.Block];
+                            //b.image.sprite = null; //square the sprite
+                            b.image.color = BlockTypeUtil.ColorFromBlock(element.Block);
+                            break;
+                        case PeriodicTableDisplayType.Block:
+                            texts[t].text = protonCount.ToString();
+                            texts[t + 1].text = element.Abbreviation;
+                            b.image.color = BlockTypeUtil.ColorFromBlock(element.Block); 
+                            break;
+                        case PeriodicTableDisplayType.Type:
+                            texts[t].text = protonCount.ToString();
+                            texts[t + 1].text = element.Abbreviation;
+                            b.image.color = ElementTypeUtil.ColorFromType(element.Type);
+                            b.onClick.AddListener(() => SetElement(protonCount));
+                            break;
+                    }
                 }
             }
         }
