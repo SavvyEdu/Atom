@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Atom.Physics;
 using DUI;
+using System;
 
 namespace Atom
 {
@@ -19,6 +20,8 @@ namespace Atom
         public UnityEvent OnDeselect; //called when the particle is released from selection
 
         protected static Atom atom; //static ref to the Atom
+
+        public static Action SFX;
 
         //get and set the radius in Unity Units
         private float radius;
@@ -75,6 +78,8 @@ namespace Atom
 
         protected void Select()
         {
+            SFX?.Invoke();
+
             //run the pickup particle behavior
             PickUpParticle();
 
@@ -83,6 +88,8 @@ namespace Atom
 
         protected void Deselect()
         {
+            SFX?.Invoke();
+
             //run the drop particle behavior
             DropParticle();
 

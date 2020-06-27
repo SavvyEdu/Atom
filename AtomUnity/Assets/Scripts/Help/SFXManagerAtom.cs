@@ -9,22 +9,34 @@ namespace Atom
     public class SFXManagerAtom : MonoBehaviour
     {
         [SerializeField] private AudioClip radioactiveSFX;
+        [SerializeField] private AudioClip particleSelectSFX;
 
         private Atom atom;
-        private AudioSource source = null;
+        private AudioSource[] sources = null;
 
         private void Awake()
         {
             atom = GetComponent<Atom>();
-            source = GetComponent<AudioSource>();
-            source.clip = radioactiveSFX;
+            sources = GetComponents<AudioSource>();
+            sources[0].clip = radioactiveSFX;
+            sources[1].clip = particleSelectSFX;
+
+            Particle.SFX = ParticleSelect;
+
+            Adjust();
         }
 
         private void Adjust()
         {
-            source.volume = Settings.MUTE ? 0 : 0.1f * Settings.SFX_VOLUME;
+            sources[0].volume = Settings.MUTE ? 0 : 0.1f * Settings.SFX_VOLUME;
+            sources[1].volume = Settings.MUTE ? 0 : 0.05f * Settings.SFX_VOLUME;
         }
 
+        private void ParticleSelect()
+        {
+            if (sources[1].isPlaying) { sources[1].Stop(); }
+            sources[1].Play();
+        }
 
         private void Update()
         {
@@ -35,14 +47,14 @@ namespace Atom
                 if (isotope != null && !isotope.Stable)
                 {
                     //make sure source isn't already looping
-                    if (!source.isPlaying)
+                    if (!sources[0].isPlaying)
                     {
-                        source.Play();
+                        sources[0].Play();
                     }
                 }
                 else
                 {
-                    source.Stop();   
+                    sources[0].Stop();   
                 }
             }
         }

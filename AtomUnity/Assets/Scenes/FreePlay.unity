@@ -15897,6 +15897,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 588326380}
     m_Modifications:
+    - target: {fileID: 3080359917532999916, guid: 317b2ad377f0e304ab5fde55502a95b8,
+        type: 3}
+      propertyPath: particleSelectSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 735544764fa7d614684128fb70fdd4b1, type: 3}
     - target: {fileID: 8229583696459969373, guid: 317b2ad377f0e304ab5fde55502a95b8,
         type: 3}
       propertyPath: particleSpeed
