@@ -15,6 +15,8 @@ namespace Atom {
         [SerializeField] private GameObject[] dOrbitals;
         [SerializeField] private GameObject[] fOrbitals;
 
+        private OrbitalHash hash = new OrbitalHash();
+        private int currN = 0, currL = 0, currM = 0;
 
         private void Start()
         {
@@ -31,7 +33,7 @@ namespace Atom {
                 Element e = Elements.GetElement(atom.ElectronCount);
                 Shell shell;
 
-                if(atom.OuterShell.ElectronCount > 0)
+                if (atom.OuterShell.ElectronCount > 0)
                 {
                     n = atom.ShellCount;
                     shell = atom.OuterShell;
@@ -43,14 +45,14 @@ namespace Atom {
                 }
 
                 l = (int)e.Block;
-               
+
                 switch (e.Block)
                 {
                     case BlockType.sBlock:
                         m = 0;
                         break;
                     case BlockType.pBlock:
-                        m = ((shell.ElectronCount - 2) % 3) - 1 ; //subtract s block, set range to [0,2], move range to [-1, 1]
+                        m = ((shell.ElectronCount - 2) % 3) - 1; //subtract s block, set range to [0,2], move range to [-1, 1]
                         break;
                     case BlockType.dBlock:
                         n -= 1;
@@ -60,6 +62,13 @@ namespace Atom {
                         n -= 2;
                         m = ((shell.NextShell.NextShell.ElectronCount - 18) % 7) - 3; //subtract spd block, set range to [0,6], move range to [-3, 3]
                         break;
+                }
+
+                if (n != currN || l != currL || m != currM)
+                {
+                    hash.Get(currN, currL, currM)?.SetActive(false); //deactive old orbital
+                    hash.Get(n, l, m).SetActive(true); //activate new orbital
+                    currN = n; currL = l; currM = m; //update current orbiatal value
                 }
             }
         }
@@ -84,7 +93,7 @@ namespace Atom {
         /// <param name="n">Shell [1, 7] </param>
         /// <param name="l">SPDF [0, 3] </param>
         /// <param name="m">obital [-3, 3] </param>
-        public void CreateOrbital(int n, int l, int m)
+        public GameObject CreateOrbital(int n, int l, int m)
         {
             //if (!ValidConfig(n, l, m)) return;
 
@@ -124,7 +133,9 @@ namespace Atom {
                 r.material.SetColor("_Color", color);
             }
 
-            obj.SetActive(true);
+            obj.SetActive(false);
+            hash.Add(n, l, m, obj);
+            return obj;
         }
 
         private bool ValidConfig(int n, int l, int m)
@@ -134,5 +145,32 @@ namespace Atom {
             if (Mathf.Abs(m) > l) return false; //validate |m| is less than l 
             return true;
         }
+
+
+        /// <summary>
+        /// helper class used for storing orbitals with n, l, m accessors
+        /// </summary>
+        private class OrbitalHash {
+
+            private Dictionary<int, GameObject> dict = new Dictionary<int, GameObject>();
+
+            private int Key(int n, int l, int m) => (n * 100) + (l * 10) + (m + l);
+
+            public void Add(int n, int l, int m, GameObject obj)
+            {
+                dict.Add(Key(n, l, m), obj);
+            }
+
+            public GameObject Get(int n, int l, int m)
+            {
+                int k = Key(n, l, m); //get key
+                if (dict.ContainsKey(k)) //make sure dictionary contains key
+                    return dict[k];
+                return null;
+               
+            }
+        }
+
     }
+
 }

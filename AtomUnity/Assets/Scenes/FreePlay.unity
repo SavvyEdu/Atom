@@ -9303,8 +9303,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 5
-    m_Right: 5
+    m_Left: 0
+    m_Right: 0
     m_Top: 5
     m_Bottom: 5
   m_ChildAlignment: 0
@@ -9398,7 +9398,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc09e634b809df2438987bd995883906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  min: {x: 0.01, y: 0.1}
+  min: {x: 0, y: 0.1}
   max: {x: 0.15, y: 0.375}
 --- !u!1 &960581715
 GameObject:
