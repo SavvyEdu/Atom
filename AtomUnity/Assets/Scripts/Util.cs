@@ -68,7 +68,7 @@ namespace Atom.Util
     }
     public enum BlockType
     {
-        sBlock, pBlock, fBlock, dBlock
+        sBlock, pBlock, dBlock, fBlock
     }
 
     public struct BlockTypeUtil
