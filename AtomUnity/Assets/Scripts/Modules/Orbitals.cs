@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Atom.Util;
 using System;
+using DUI;
 
 namespace Atom {
+
+    [RequireComponent(typeof(DUIAnchor), typeof(DUIButton))]
     public class Orbitals : MonoBehaviour
     {
         [SerializeField] private Atom atom;
+        [SerializeField] private Transform root;
+        private DUIAnchor m_anchor; //ref to own DUI anchor
+        private DUIButton m_button; //ref to own DUI button
 
         [Header("Orbitals")]
         [SerializeField] private GameObject[] sOrbitals;
@@ -15,20 +21,40 @@ namespace Atom {
         [SerializeField] private GameObject[] dOrbitals;
         [SerializeField] private GameObject[] fOrbitals;
 
-        private OrbitalHash hash = new OrbitalHash();
+        private OrbitalMap map = new OrbitalMap();
+        private GameObject curr = null;
         private int currN = 0, currL = 0, currM = 0;
+
+        private const float DRAG_SPEED = 2;
+
+        private void Awake()
+        {
+            gameObject.SetActive(Settings.ORBITALS);
+
+            m_anchor = GetComponent<DUIAnchor>();
+            m_button = GetComponent<DUIButton>();
+
+            m_button.OnDrag += (Vector2 drag) =>
+            {
+                root.RotateAround(Vector3.up, drag.x * DRAG_SPEED);
+                root.RotateAround(Vector3.right, drag.y * DRAG_SPEED);
+            };
+
+            root.localScale = Vector3.one * 0.1f;
+        }
 
         private void Start()
         {
             CreateAllOrbitals();
-            transform.localScale = Vector3.one * 0.1f;
+            BoxCollider collider = GetComponent<BoxCollider>();
+            collider.size = m_anchor.Bounds.size;
         }
 
         private void Update()
         {
             int n = 0, l = 0, m = 0;
 
-            if (atom.Element != null)
+            if (atom.Element != null && atom.ElectronCount > 0)
             {
                 Element e = Elements.GetElement(atom.ElectronCount);
                 Shell shell;
@@ -66,14 +92,24 @@ namespace Atom {
 
                 if (n != currN || l != currL || m != currM)
                 {
-                    hash.Get(currN, currL, currM)?.SetActive(false); //deactive old orbital
-                    hash.Get(n, l, m).SetActive(true); //activate new orbital
+                    curr?.SetActive(false); //deactive old orbital
+                    curr = map.Get(n, l, m);
+                    curr.SetActive(true); //activate new orbital
+
+                    AdjustScale();
                     currN = n; currL = l; currM = m; //update current orbiatal value
                 }
             }
+            else
+            {
+                curr?.SetActive(false);
+                currN = 0; currL = 0; currM = 0;
+            }
         }
 
-
+        /// <summary>
+        /// Loop through all possible n, l, m to 
+        /// </summary>
         public void CreateAllOrbitals()
         {
             for(int n = 1; n <= 7; n++)
@@ -90,6 +126,9 @@ namespace Atom {
             }
         }
 
+        /// <summary>
+        /// Instantiate an orbiatl with scale and color
+        /// </summary>
         /// <param name="n">Shell [1, 7] </param>
         /// <param name="l">SPDF [0, 3] </param>
         /// <param name="m">obital [-3, 3] </param>
@@ -121,7 +160,7 @@ namespace Atom {
                 scale = 1.5f * n - 2;
             }
 
-            GameObject obj = Instantiate(orbital, Vector3.zero, Quaternion.identity, transform);
+            GameObject obj = Instantiate(orbital, Vector3.zero, Quaternion.identity, root);
             obj.transform.localPosition = Vector3.zero;
             obj.transform.localScale = Vector3.one * scale;
 
@@ -134,7 +173,7 @@ namespace Atom {
             }
 
             obj.SetActive(false);
-            hash.Add(n, l, m, obj);
+            map.Add(n, l, m, obj);
             return obj;
         }
 
@@ -147,10 +186,18 @@ namespace Atom {
         }
 
 
+        public void AdjustScale()
+        {
+            //calculate scale = maxRadius / baseRadius 
+            float minAxis = Mathf.Min(m_anchor.Bounds.extents.x, m_anchor.Bounds.extents.y); //minor axis
+            float scale = Mathf.Min(1, (minAxis * 0.9f) / curr.transform.localScale.x);
+            root.localScale = Vector3.one * scale;
+        }
+
         /// <summary>
         /// helper class used for storing orbitals with n, l, m accessors
         /// </summary>
-        private class OrbitalHash {
+        private class OrbitalMap {
 
             private Dictionary<int, GameObject> dict = new Dictionary<int, GameObject>();
 
@@ -158,12 +205,15 @@ namespace Atom {
 
             public void Add(int n, int l, int m, GameObject obj)
             {
-                dict.Add(Key(n, l, m), obj);
+                int k = Key(n, l, m); //make key
+                if (dict.ContainsKey(k)) //make sure dictionary doesn't contains key
+                    throw new Exception($"Map {k} already exists");
+                dict.Add(k, obj);
             }
 
             public GameObject Get(int n, int l, int m)
             {
-                int k = Key(n, l, m); //get key
+                int k = Key(n, l, m); //make key
                 if (dict.ContainsKey(k)) //make sure dictionary contains key
                     return dict[k];
                 return null;

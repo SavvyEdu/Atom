@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Settings : MonoBehaviour
 {
+
     [Header("Simulation")]
 
     [SerializeField] private Toggle shakeToggle;
@@ -27,6 +28,13 @@ public class Settings : MonoBehaviour
     [SerializeField] private Slider musicSlider;
     public static float MUSIC_VOLUME = 0.5f;
 
+    [Header("Advanced")]
+    [SerializeField] private Toggle orbitalsToggle;
+    public static bool ORBITALS = true;
+
+    [SerializeField] private Button restoreButton;
+
+
     private void Awake()
     {
         //set defaluts 
@@ -38,6 +46,8 @@ public class Settings : MonoBehaviour
         sfxSlider.value = SFX_VOLUME;
         musicSlider.value = MUSIC_VOLUME;
 
+        orbitalsToggle.isOn = ORBITALS;
+
         //update settings
         shakeToggle.onValueChanged.AddListener((bool v) => SHAKE = v);
         orbitToggle.onValueChanged.AddListener((bool v) => ORBIT = v);
@@ -46,6 +56,20 @@ public class Settings : MonoBehaviour
         muteToggle.onValueChanged.AddListener((bool v) => MUTE = v);
         sfxSlider.onValueChanged.AddListener((float v) => SFX_VOLUME = v);
         musicSlider.onValueChanged.AddListener((float v) => MUSIC_VOLUME = v);
+
+        orbitalsToggle.onValueChanged.AddListener((bool v) => ORBITALS = v);
+        restoreButton.onClick.AddListener(() =>
+        {
+            shakeToggle.isOn = SHAKE = true;
+            orbitToggle.isOn = ORBIT = true;
+            colorToggle.isOn = COLOR = true;
+
+            muteToggle.isOn = MUTE = false;
+            sfxSlider.value = SFX_VOLUME = 0.5f;
+            musicSlider.value = MUSIC_VOLUME = 0.5f;
+
+            orbitalsToggle.isOn = ORBITALS = true;
+        });
     }
 
     private void Start()

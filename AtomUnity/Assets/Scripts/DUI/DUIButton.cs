@@ -13,5 +13,6 @@ namespace DUI
         /// </summary>
 
         public UnityEvent OnClick; //called when the mouse clicks while in bounds
+        public UnityAction<Vector2> OnDrag;
     }
 }

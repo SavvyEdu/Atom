@@ -73,6 +73,15 @@ namespace DUI //Dimensional User Interface
                     buttonOver.OnClick?.Invoke();
                 }
             }
+
+            if (Input.GetMouseButton(0) && buttonOver != null && buttonOver.OnDrag != null)
+            {
+                buttonOver?.OnDrag(inputPosPrev - inputPos);
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                buttonOver = null;
+            }
 #elif UNITY_ANDROID || UNITY_IOS
             if (Input.touchCount > 0) //make sure there are touches
             {
