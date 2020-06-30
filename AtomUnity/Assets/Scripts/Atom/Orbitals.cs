@@ -12,8 +12,10 @@ namespace Atom {
     {
         [SerializeField] private Atom atom;
         [SerializeField] private Transform root;
+        [SerializeField] private Transform[] axis;
         private DUIAnchor m_anchor; //ref to own DUI anchor
         private DUIButton m_button; //ref to own DUI button
+        private BoxCollider m_collider; //ref to own DUI button
 
         [Header("Orbitals")]
         [SerializeField] private GameObject[] sOrbitals;
@@ -22,10 +24,10 @@ namespace Atom {
         [SerializeField] private GameObject[] fOrbitals;
 
         private OrbitalMap map = new OrbitalMap();
-        private GameObject curr = null;
+        private GameObject currentOrbital = null;
         private int currN = 0, currL = 0, currM = 0;
 
-        private const float DRAG_SPEED = 2;
+        private const float DRAG_SPEED = 1;
 
         private void Awake()
         {
@@ -33,21 +35,22 @@ namespace Atom {
 
             m_anchor = GetComponent<DUIAnchor>();
             m_button = GetComponent<DUIButton>();
+            m_collider = GetComponent<BoxCollider>();
 
             m_button.OnDrag += (Vector2 drag) =>
             {
                 root.RotateAround(Vector3.up, drag.x * DRAG_SPEED);
-                root.RotateAround(Vector3.right, drag.y * DRAG_SPEED);
+                root.RotateAround(Vector3.right, -drag.y * DRAG_SPEED);
             };
-
-            root.localScale = Vector3.one * 0.1f;
         }
 
         private void Start()
         {
             CreateAllOrbitals();
-            BoxCollider collider = GetComponent<BoxCollider>();
-            collider.size = m_anchor.Bounds.size;
+            
+            m_collider.size = m_anchor.Bounds.size;
+
+            foreach (Transform a in axis) { a.gameObject.SetActive(Settings.AXIS); }
         }
 
         private void Update()
@@ -78,23 +81,29 @@ namespace Atom {
                         m = 0;
                         break;
                     case BlockType.pBlock:
-                        m = ((shell.ElectronCount - 2) % 3) - 1; //subtract s block, set range to [0,2], move range to [-1, 1]
+                        m = ((shell.ElectronCount - 3) % 3) - 1; //subtract s block+1, set range to [0,2], move range to [-1, 1]
                         break;
                     case BlockType.dBlock:
                         n -= 1;
-                        m = ((shell.NextShell.ElectronCount - 8) % 5) - 2; //subtract sp block, set range to [0,4], move range to [-2, 2]
+                        m = ((shell.NextShell.ElectronCount - 9) % 5) - 2; //subtract sp blocks+1, set range to [0,4], move range to [-2, 2]
                         break;
                     case BlockType.fBlock:
                         n -= 2;
-                        m = ((shell.NextShell.NextShell.ElectronCount - 18) % 7) - 3; //subtract spd block, set range to [0,6], move range to [-3, 3]
+                        m = ((shell.NextShell.NextShell.ElectronCount - 19 ) % 7) - 3; //subtract spd block+1, set range to [0,6], move range to [-3, 3]
                         break;
                 }
 
                 if (n != currN || l != currL || m != currM)
                 {
-                    curr?.SetActive(false); //deactive old orbital
-                    curr = map.Get(n, l, m);
-                    curr.SetActive(true); //activate new orbital
+                    currentOrbital?.SetActive(false); //deactive old orbital
+                    currentOrbital = map.Get(n, l, m);
+                    currentOrbital.SetActive(true); //activate new orbital
+
+                    if (Settings.AXIS)
+                    {
+                        float axisLength = currentOrbital.transform.localScale.x * 1.2f;
+                        foreach (Transform a in axis) { a.localScale = new Vector3(0.1f, axisLength, 0.1f); }
+                    }
 
                     AdjustScale();
                     currN = n; currL = l; currM = m; //update current orbiatal value
@@ -102,7 +111,7 @@ namespace Atom {
             }
             else
             {
-                curr?.SetActive(false);
+                currentOrbital?.SetActive(false);
                 currN = 0; currL = 0; currM = 0;
             }
         }
@@ -188,10 +197,14 @@ namespace Atom {
 
         public void AdjustScale()
         {
-            //calculate scale = maxRadius / baseRadius 
-            float minAxis = Mathf.Min(m_anchor.Bounds.extents.x, m_anchor.Bounds.extents.y); //minor axis
-            float scale = Mathf.Min(1, (minAxis * 0.9f) / curr.transform.localScale.x);
-            root.localScale = Vector3.one * scale;
+            if (currentOrbital != null)
+            {
+                //calculate scale = maxRadius / baseRadius 
+                float minAxis = Mathf.Min(m_anchor.Bounds.extents.x, m_anchor.Bounds.extents.y); //minor axis
+                float scale = Mathf.Min(1, (minAxis * 0.9f) / currentOrbital.transform.localScale.x);
+                root.localScale = Vector3.one * scale;
+            }
+            m_collider.size = m_anchor.Bounds.size;
         }
 
         /// <summary>

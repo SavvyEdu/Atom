@@ -17,7 +17,7 @@ public class Transition : MonoBehaviour
     [SerializeField] private float lerpTime = 1.0f;
     private float currLerpTime = 0.0f;
 
-    private bool t = false;
+    public bool Transitioning { get; private set; } = false;
 
     private void Start()
     {
@@ -26,8 +26,8 @@ public class Transition : MonoBehaviour
 
     public void StartTransition(int index)
     {
-        if (t) { return; }
-        t = true;
+        if (Transitioning) { return; }
+        Transitioning = true;
         StartCoroutine(LerpTo(index));
     }
 
@@ -59,12 +59,13 @@ public class Transition : MonoBehaviour
             }
 
             transitions[index].atomTransition.atom.AdjustScale();
+            transitions[index].atomTransition.orbitals.AdjustScale();
             
             yield return new WaitForEndOfFrame();
         }
 
         transitions[index].atomTransition.atom.Interactable = transitions[index].atomTransition.interactable;
-        t = false;
+        Transitioning = false;
     }
 
     private void SetTo(int index)
@@ -80,8 +81,9 @@ public class Transition : MonoBehaviour
         }
 
         transitions[index].atomTransition.atom.AdjustScale();
+        transitions[index].atomTransition.orbitals.AdjustScale();
         transitions[index].atomTransition.atom.Interactable = transitions[index].atomTransition.interactable;
-        t = false;
+        Transitioning = false;
     }
 }
 
@@ -99,6 +101,7 @@ public class Trans
 public class AtomTrans
 {
     public Atom.Atom atom;
+    public Orbitals orbitals;
     public bool interactable;
 }
 

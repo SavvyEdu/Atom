@@ -32,6 +32,9 @@ public class Settings : MonoBehaviour
     [SerializeField] private Toggle orbitalsToggle;
     public static bool ORBITALS = true;
 
+    [SerializeField] private Toggle axisToggle;
+    public static bool AXIS = false;
+
     [SerializeField] private Button restoreButton;
 
 
@@ -47,6 +50,7 @@ public class Settings : MonoBehaviour
         musicSlider.value = MUSIC_VOLUME;
 
         orbitalsToggle.isOn = ORBITALS;
+        axisToggle.isOn = AXIS;
 
         //update settings
         shakeToggle.onValueChanged.AddListener((bool v) => SHAKE = v);
@@ -58,18 +62,22 @@ public class Settings : MonoBehaviour
         musicSlider.onValueChanged.AddListener((float v) => MUSIC_VOLUME = v);
 
         orbitalsToggle.onValueChanged.AddListener((bool v) => ORBITALS = v);
-        restoreButton.onClick.AddListener(() =>
-        {
-            shakeToggle.isOn = SHAKE = true;
-            orbitToggle.isOn = ORBIT = true;
-            colorToggle.isOn = COLOR = true;
+        axisToggle.onValueChanged.AddListener((bool v) => AXIS = v);
+        restoreButton.onClick.AddListener(SetToDefault);
+    }
 
-            muteToggle.isOn = MUTE = false;
-            sfxSlider.value = SFX_VOLUME = 0.5f;
-            musicSlider.value = MUSIC_VOLUME = 0.5f;
+    private void SetToDefault()
+    {
+        shakeToggle.isOn = SHAKE = true;
+        orbitToggle.isOn = ORBIT = true;
+        colorToggle.isOn = COLOR = true;
 
-            orbitalsToggle.isOn = ORBITALS = true;
-        });
+        muteToggle.isOn = MUTE = false;
+        sfxSlider.value = SFX_VOLUME = 0.5f;
+        musicSlider.value = MUSIC_VOLUME = 0.5f;
+
+        orbitalsToggle.isOn = ORBITALS = true;
+        axisToggle.isOn = AXIS = false;
     }
 
     private void Start()
