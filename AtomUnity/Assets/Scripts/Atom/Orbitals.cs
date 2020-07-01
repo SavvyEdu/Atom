@@ -29,6 +29,8 @@ namespace Atom {
 
         private const float DRAG_SPEED = 1;
 
+        private Vector3 AXIS_SCALE => new Vector3(0.025f, 1f, 0.025f);
+
         private void Awake()
         {
             gameObject.SetActive(Settings.ORBITALS);
@@ -101,8 +103,8 @@ namespace Atom {
 
                     if (Settings.AXIS)
                     {
-                        float axisLength = currentOrbital.transform.localScale.x * 1.2f;
-                        foreach (Transform a in axis) { a.localScale = new Vector3(0.1f, axisLength, 0.1f); }
+                        float axisLength = currentOrbital.transform.localScale.x * 1.15f;
+                        foreach (Transform a in axis) { a.localScale = AXIS_SCALE * axisLength; }
                     }
 
                     AdjustScale();
