@@ -25,11 +25,12 @@ namespace Atom {
 
         private OrbitalMap map = new OrbitalMap();
         private GameObject currentOrbital = null;
-        private int currN = 0, currL = 0, currM = 0;
+        private int N = 0, L = 0, ML = 0, MS = 0;
 
         private const float DRAG_SPEED = 1;
-
         private Vector3 AXIS_SCALE => new Vector3(0.025f, 1f, 0.025f);
+
+        public static Action<int, int, int, int> OnUpdtae;
 
         private void Awake()
         {
@@ -57,7 +58,7 @@ namespace Atom {
 
         private void Update()
         {
-            int n = 0, l = 0, m = 0;
+            int n = 0, l = 0, ml = 0, ms = 0;
 
             if (atom.Element != null && atom.ElectronCount > 0)
             {
@@ -80,25 +81,27 @@ namespace Atom {
                 switch (e.Block)
                 {
                     case BlockType.sBlock:
-                        m = 0;
+                        ml = 0;
                         break;
                     case BlockType.pBlock:
-                        m = ((shell.ElectronCount - 3) % 3) - 1; //subtract s block+1, set range to [0,2], move range to [-1, 1]
+                        ml = ((shell.ElectronCount - 3) % 3) - 1; //subtract s block+1, set range to [0,2], move range to [-1, 1]
                         break;
                     case BlockType.dBlock:
                         n -= 1;
-                        m = ((shell.NextShell.ElectronCount - 9) % 5) - 2; //subtract sp blocks+1, set range to [0,4], move range to [-2, 2]
+                        ml = ((shell.NextShell.ElectronCount - 9) % 5) - 2; //subtract sp blocks+1, set range to [0,4], move range to [-2, 2]
                         break;
                     case BlockType.fBlock:
                         n -= 2;
-                        m = ((shell.NextShell.NextShell.ElectronCount - 19 ) % 7) - 3; //subtract spd block+1, set range to [0,6], move range to [-3, 3]
+                        ml = ((shell.NextShell.NextShell.ElectronCount - 19 ) % 7) - 3; //subtract spd block+1, set range to [0,6], move range to [-3, 3]
                         break;
                 }
 
-                if (n != currN || l != currL || m != currM)
+                ms = atom.ElectronCount % 2; //  0,1
+
+                if (n != N || l != L || ml != ML || ms != MS)
                 {
                     currentOrbital?.SetActive(false); //deactive old orbital
-                    currentOrbital = map.Get(n, l, m);
+                    currentOrbital = map.Get(n, l, ml);
                     currentOrbital.SetActive(true); //activate new orbital
 
                     if (Settings.AXIS)
@@ -108,13 +111,15 @@ namespace Atom {
                     }
 
                     AdjustScale();
-                    currN = n; currL = l; currM = m; //update current orbiatal value
+                    N = n; L = l; ML = ml; MS = ms; //update current orbiatal value
+
+                    OnUpdtae?.Invoke(n, l, ml, ms);
                 }
             }
             else
             {
                 currentOrbital?.SetActive(false);
-                currN = 0; currL = 0; currM = 0;
+                N = 0; L = 0; ML = 0;
             }
         }
 
@@ -142,8 +147,8 @@ namespace Atom {
         /// </summary>
         /// <param name="n">Shell [1, 7] </param>
         /// <param name="l">SPDF [0, 3] </param>
-        /// <param name="m">obital [-3, 3] </param>
-        public GameObject CreateOrbital(int n, int l, int m)
+        /// <param name="ml">obital [-3, 3] </param>
+        public GameObject CreateOrbital(int n, int l, int ml)
         {
             //if (!ValidConfig(n, l, m)) return;
 
@@ -152,22 +157,22 @@ namespace Atom {
 
             if (l == 0)
             {
-                orbital = sOrbitals[m];
+                orbital = sOrbitals[ml];
                 scale = 1f * n;
             }
             else if (l == 1)
             {
-                orbital = pOrbitals[m + 1];
+                orbital = pOrbitals[ml + 1];
                 scale = 1.25f * n;
             }
             else if (l == 2)
             {
-                orbital = dOrbitals[m + 2];
+                orbital = dOrbitals[ml + 2];
                 scale = 4f / 3 * n;
             }
             else if (l == 3)
             {
-                orbital = fOrbitals[m + 3];
+                orbital = fOrbitals[ml + 3];
                 scale = 1.5f * n - 2;
             }
 
@@ -184,15 +189,15 @@ namespace Atom {
             }
 
             obj.SetActive(false);
-            map.Add(n, l, m, obj);
+            map.Add(n, l, ml, obj);
             return obj;
         }
 
-        private bool ValidConfig(int n, int l, int m)
+        private bool ValidConfig(int n, int l, int ml)
         {
             if (n < 1 || n > 7) return false; //validate n between 1 and 7
             if (l < 0 || l > -Mathf.Abs(n - 4.5f) + 3.5f) return false; //valudate l based on n
-            if (Mathf.Abs(m) > l) return false; //validate |m| is less than l 
+            if (Mathf.Abs(ml) > l) return false; //validate |m| is less than l 
             return true;
         }
 
@@ -216,19 +221,19 @@ namespace Atom {
 
             private Dictionary<int, GameObject> dict = new Dictionary<int, GameObject>();
 
-            private int Key(int n, int l, int m) => (n * 100) + (l * 10) + (m + l);
+            private int Key(int n, int l, int ml) => (n * 100) + (l * 10) + (ml + l);
 
-            public void Add(int n, int l, int m, GameObject obj)
+            public void Add(int n, int l, int ml, GameObject obj)
             {
-                int k = Key(n, l, m); //make key
+                int k = Key(n, l, ml); //make key
                 if (dict.ContainsKey(k)) //make sure dictionary doesn't contains key
                     throw new Exception($"Map {k} already exists");
                 dict.Add(k, obj);
             }
 
-            public GameObject Get(int n, int l, int m)
+            public GameObject Get(int n, int l, int ml)
             {
-                int k = Key(n, l, m); //make key
+                int k = Key(n, l, ml); //make key
                 if (dict.ContainsKey(k)) //make sure dictionary contains key
                     return dict[k];
                 return null;
