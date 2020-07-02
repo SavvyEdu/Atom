@@ -21,7 +21,8 @@ namespace Atom
 
         protected static Atom atom; //static ref to the Atom
 
-        public static Action SFX;
+        public static Action SFX_Select;
+        public static Action SFX_Deselect;
 
         //get and set the radius in Unity Units
         private float radius;
@@ -78,7 +79,7 @@ namespace Atom
 
         protected void Select()
         {
-            SFX?.Invoke();
+            SFX_Select?.Invoke();
 
             //run the pickup particle behavior
             PickUpParticle();
@@ -88,7 +89,7 @@ namespace Atom
 
         protected void Deselect()
         {
-            SFX?.Invoke();
+            SFX_Deselect?.Invoke();
 
             //run the drop particle behavior
             DropParticle();

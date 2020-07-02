@@ -37,6 +37,8 @@ namespace Atom
         }
         public Element Element { get; private set; }
 
+        public static Action SFX_Shell;
+
         private void Awake()
         {
             anchor = GetComponent<DUIAnchor>();
@@ -177,6 +179,7 @@ namespace Atom
 
             //destroy the shell object
             Destroy(shells.Pop().gameObject);
+            SFX_Shell?.Invoke();
 
             if (shells.Count == 0)
                 return; //don't need to calculate radius of nothing
@@ -201,9 +204,10 @@ namespace Atom
 
             //push shell onto stack
             shells.Push(shell);
-            
+            SFX_Shell?.Invoke();
+
             //Fill the previous outerShell
-            if(OuterShell.NextShell != null)
+            if (OuterShell.NextShell != null)
             {
                 while (!OuterShell.NextShell.pBlockFull)
                     workbench.NewAutoElectron();
