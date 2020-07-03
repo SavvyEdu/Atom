@@ -33,7 +33,10 @@ public class Settings : MonoBehaviour
     public static bool ORBITALS = true;
 
     [SerializeField] private Toggle axisToggle;
-    public static bool AXIS = false;
+    public static bool AXIS = true;
+
+    [SerializeField] private Toggle allOrbitalsToggle;
+    public static bool ORBITALS_ALL = true;
 
     [SerializeField] private Button restoreButton;
 
@@ -51,6 +54,7 @@ public class Settings : MonoBehaviour
 
         orbitalsToggle.isOn = ORBITALS;
         axisToggle.isOn = AXIS;
+        allOrbitalsToggle.isOn = ORBITALS_ALL;
 
         //update settings
         shakeToggle.onValueChanged.AddListener((bool v) => SHAKE = v);
@@ -63,6 +67,7 @@ public class Settings : MonoBehaviour
 
         orbitalsToggle.onValueChanged.AddListener((bool v) => ORBITALS = v);
         axisToggle.onValueChanged.AddListener((bool v) => AXIS = v);
+        allOrbitalsToggle.onValueChanged.AddListener((bool v) => ORBITALS_ALL = v);
         restoreButton.onClick.AddListener(SetToDefault);
     }
 
@@ -78,6 +83,8 @@ public class Settings : MonoBehaviour
 
         orbitalsToggle.isOn = ORBITALS = true;
         axisToggle.isOn = AXIS = false;
+        allOrbitalsToggle.isOn = ORBITALS_ALL = false;
+
     }
 
     private void Start()

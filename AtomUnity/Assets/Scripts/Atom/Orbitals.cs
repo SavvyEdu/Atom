@@ -4,6 +4,8 @@ using UnityEngine;
 using Atom.Util;
 using System;
 using DUI;
+using UnityEngine.AI;
+using System.Data;
 
 namespace Atom {
 
@@ -23,12 +25,13 @@ namespace Atom {
         [SerializeField] private GameObject[] dOrbitals;
         [SerializeField] private GameObject[] fOrbitals;
 
-        private OrbitalMap map = new OrbitalMap();
         private GameObject currentOrbital = null;
-        private int N = 0, L = 0, ML = 0, MS = 0;
+        private int currentElectronCount = 0;
 
         private const float DRAG_SPEED = 1;
         private Vector3 AXIS_SCALE => new Vector3(0.025f, 1f, 0.025f);
+
+        private Dictionary<int, OrbitalData> dict = new Dictionary<int, OrbitalData>();
 
         public static Action<int, int, int, int> OnUpdtae;
 
@@ -58,85 +61,119 @@ namespace Atom {
 
         private void Update()
         {
-            int n = 0, l = 0, ml = 0, ms = 0;
+            int electronCount = atom.ElectronCount;
 
-            if (atom.Element != null && atom.ElectronCount > 0)
+            if (atom.Element != null && electronCount > 0)
             {
-                Element e = Elements.GetElement(atom.ElectronCount);
-                Shell shell;
-
-                if (atom.OuterShell.ElectronCount > 0)
-                {
-                    n = atom.ShellCount;
-                    shell = atom.OuterShell;
-                }
-                else
-                {
-                    n = atom.ShellCount - 1;
-                    shell = atom.OuterShell.NextShell;
-                }
-
-                l = (int)e.Block;
-
-                switch (e.Block)
-                {
-                    case BlockType.sBlock:
-                        ml = 0;
-                        break;
-                    case BlockType.pBlock:
-                        ml = ((shell.ElectronCount - 3) % 3) - 1; //subtract s block+1, set range to [0,2], move range to [-1, 1]
-                        break;
-                    case BlockType.dBlock:
-                        n -= 1;
-                        ml = ((shell.NextShell.ElectronCount - 9) % 5) - 2; //subtract sp blocks+1, set range to [0,4], move range to [-2, 2]
-                        break;
-                    case BlockType.fBlock:
-                        n -= 2;
-                        ml = ((shell.NextShell.NextShell.ElectronCount - 19 ) % 7) - 3; //subtract spd block+1, set range to [0,6], move range to [-3, 3]
-                        break;
-                }
-
-                ms = atom.ElectronCount % 2; //  0,1
-
-                if (n != N || l != L || ml != ML || ms != MS)
-                {
-                    currentOrbital?.SetActive(false); //deactive old orbital
-                    currentOrbital = map.Get(n, l, ml);
-                    currentOrbital.SetActive(true); //activate new orbital
-
-                    if (Settings.AXIS)
-                    {
-                        float axisLength = currentOrbital.transform.localScale.x * 1.15f;
-                        foreach (Transform a in axis) { a.localScale = AXIS_SCALE * axisLength; }
-                    }
-
-                    AdjustScale();
-                    N = n; L = l; ML = ml; MS = ms; //update current orbiatal value
-
-                    OnUpdtae?.Invoke(n, l, ml, ms);
-                }
+                ShowOrbital(electronCount);
             }
             else
             {
-                currentOrbital?.SetActive(false);
-                N = 0; L = 0; ML = 0;
+                currentElectronCount = 0;
             }
         }
+
+        public void DisplayOrbitals(int electronCount)
+        {
+            ShowOrbital(electronCount);
+        }
+
+        public void ShowOrbital(int electronCount)
+        {
+            if (electronCount != currentElectronCount && electronCount > 0)
+            {   /*
+                int n, l, ml, ms;
+
+                Element electronElement = Elements.GetElement(electronCount);
+                bool inOuterShell = atom.OuterShell.ElectronCount > 0;
+                Shell electronShell = inOuterShell ? atom.OuterShell : atom.OuterShell.NextShell;
+
+                //calculate n
+                n = atom.ShellCount;
+                if (!inOuterShell) { n -= 1; }
+                if (electronElement.Block == BlockType.dBlock) { n -= 1; }
+                if (electronElement.Block == BlockType.fBlock) { n -= 2; }
+
+                //calculate l
+                l = (int)electronElement.Block; //spdf => 0123
+
+                //calculate ml
+                switch (electronElement.Block)
+                {
+                    default:
+                    case BlockType.sBlock: ml = 0; break;
+                    case BlockType.pBlock: ml = ((electronShell.ElectronCount - 3) % 3) - 1; break;//subtract s block+1, set range to [0,2], move range to [-1, 1]
+                    case BlockType.dBlock: ml = ((electronShell.NextShell.ElectronCount - 9) % 5) - 2; break;//subtract sp blocks+1, set range to [0,4], move range to [-2, 2]
+                    case BlockType.fBlock: ml = ((electronShell.NextShell.NextShell.ElectronCount - 19) % 7) - 3; break;//subtract spd block+1, set range to [0,6], move range to [-3, 3]
+                }
+
+                //calculate ms
+                switch (electronElement.Block)
+                {
+                    default:
+                    case BlockType.sBlock: ms = atom.ElectronCount <= 1 ? -1 : 1; break;
+                    case BlockType.pBlock: ms = electronShell.ElectronCount - 2 <= 3 ? -1 : 1; break;//subtract s block+1, set range to [0,2], move range to [-1, 1]
+                    case BlockType.dBlock: ms = electronShell.NextShell.ElectronCount - 8 <= 5 ? -1 : 1; break;//subtract sp blocks+1, set range to [0,4], move range to [-2, 2]
+                    case BlockType.fBlock: ms = electronShell.NextShell.NextShell.ElectronCount - 18 < 7 ? -1 : 1; break;//subtract spd block+1, set range to [0,6], move range to [-3, 3]
+                }*/
+
+                OrbitalData data = dict[electronCount];
+
+                //activate and deactivate all necessary orbitals
+                currentOrbital?.SetActive(false); //deactive old orbital
+                currentOrbital = data.obj;
+                currentOrbital.SetActive(true); //activate new orbital
+
+                //update the axis
+                if (Settings.AXIS) 
+                {
+                    float axisLength = currentOrbital.transform.localScale.x * 1.15f;
+                    foreach (Transform a in axis) { a.localScale = AXIS_SCALE * axisLength; }
+                }
+
+                //Adjust 
+                AdjustScale();
+                currentElectronCount = electronCount; //update current orbiatal value
+                OnUpdtae?.Invoke(data.n, data.l, data.ml, data.ms);
+            }
+        }
+
 
         /// <summary>
         /// Loop through all possible n, l, m to 
         /// </summary>
         public void CreateAllOrbitals()
         {
+            int e = 0;
+            //loop over all 7 energy levels
             for(int n = 1; n <= 7; n++)
             {
-                for(int l = 0; l < 4; l++)
+                int maxL = (int)(-Mathf.Abs(n - 4.5f) + 3.5f); //generates: 0 1 2 3 3 2 1
+                //loop over appropriate spdf
+                for (int l = 0; l <= maxL; l++)
                 {
-                    if (l > -Mathf.Abs(n - 4.5f) + 3.5f) continue; //validate l based on n
-                    for(int m = -3; m <= 3; m++)
+                    //loop over spin down(-1) then up(+1)
+                    for(int ms = -1; ms <= 1; ms += 2)
                     {
-                        if (Mathf.Abs(m) > l) continue; //validate |m| is less than l 
-                        CreateOrbital(n, l, m); //s1
+                        //loop over possible magnetic [-l, l]
+                        for (int ml = -l; ml <= l; ml++)
+                        {
+                            e += 1;
+                            
+                            //modify e based on n & l to get electron count
+                            int electronCount = e;
+                            if(l == 0 && n > 3) { electronCount -= 10; }
+                            if(l == 0 && n > 4) { electronCount -= 14; }
+                            if(l == 0 && n == 6) { electronCount -= 14; }
+                            if(l == 1 && (n == 5 || n == 6)) { electronCount -= 14; }
+                            if(l == 2) { electronCount += 2; }
+                            if(l == 3) { electronCount += 10; }
+
+                            //Debug.Log(electronCount + ": " + n + " " + l + " " + ml + " " + ms);
+
+
+                            CreateOrbital(electronCount, n, l, ml, ms); //s1
+                        }
                     }
                 }
             }
@@ -148,10 +185,8 @@ namespace Atom {
         /// <param name="n">Shell [1, 7] </param>
         /// <param name="l">SPDF [0, 3] </param>
         /// <param name="ml">obital [-3, 3] </param>
-        public GameObject CreateOrbital(int n, int l, int ml)
+        public GameObject CreateOrbital(int electronCount, int n, int l, int ml, int ms)
         {
-            //if (!ValidConfig(n, l, m)) return;
-
             GameObject orbital = null;
             float scale = n;
 
@@ -189,7 +224,7 @@ namespace Atom {
             }
 
             obj.SetActive(false);
-            map.Add(n, l, ml, obj);
+            dict.Add(electronCount, new OrbitalData(obj, n, l, ml, ms));
             return obj;
         }
 
@@ -214,30 +249,18 @@ namespace Atom {
             m_collider.size = m_anchor.Bounds.size;
         }
 
-        /// <summary>
-        /// helper class used for storing orbitals with n, l, m accessors
-        /// </summary>
-        private class OrbitalMap {
+        private struct OrbitalData
+        {
+            public GameObject obj;
+            public int n, l, ml, ms;
 
-            private Dictionary<int, GameObject> dict = new Dictionary<int, GameObject>();
-
-            private int Key(int n, int l, int ml) => (n * 100) + (l * 10) + (ml + l);
-
-            public void Add(int n, int l, int ml, GameObject obj)
+            public OrbitalData(GameObject obj, int n, int l, int ml, int ms)
             {
-                int k = Key(n, l, ml); //make key
-                if (dict.ContainsKey(k)) //make sure dictionary doesn't contains key
-                    throw new Exception($"Map {k} already exists");
-                dict.Add(k, obj);
-            }
-
-            public GameObject Get(int n, int l, int ml)
-            {
-                int k = Key(n, l, ml); //make key
-                if (dict.ContainsKey(k)) //make sure dictionary contains key
-                    return dict[k];
-                return null;
-               
+                this.obj = obj;
+                this.n = n;
+                this.l = l;
+                this.ml = ml;
+                this.ms = ms;
             }
         }
 
