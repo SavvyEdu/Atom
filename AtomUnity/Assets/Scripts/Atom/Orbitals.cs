@@ -26,6 +26,10 @@ namespace Atom {
         [SerializeField] private GameObject[] dOrbitals;
         [SerializeField] private GameObject[] fOrbitals;
 
+        [Header("Materials")]
+        [SerializeField] private Material mat_transparent;
+        [SerializeField] private Material mat_solid;
+
         private GameObject currentOrbital = null;
         private int currentElectronCount = 0;
 
@@ -169,17 +173,17 @@ namespace Atom {
             else if (l == 1)
             {
                 orbital = pOrbitals[ml + 1];
-                scale = 1.25f * n;
+                scale = 1.33f * n;
             }
             else if (l == 2)
             {
                 orbital = dOrbitals[ml + 2];
-                scale = 4f / 3 * n;
+                scale = 1.5f * n;
             }
             else if (l == 3)
             {
                 orbital = fOrbitals[ml + 3];
-                scale = 1.5f * n - 2;
+                scale = 2.0f * n-1;
             }
 
             GameObject obj = Instantiate(orbital, Vector3.zero, Quaternion.identity, root);
@@ -191,6 +195,16 @@ namespace Atom {
             Color color = BlockTypeUtil.ColorFromBlock((BlockType)l);
             foreach (Renderer r in renderers)
             {
+                switch (Settings.MATERIAL)
+                {
+                    case SettingsMaterial.Solid: 
+                        r.material = mat_solid; 
+                        break;
+                    case SettingsMaterial.Transparent: 
+                        r.material = mat_transparent;
+                        color /= 4;
+                        break;
+                }
                 r.material.SetColor("_Color", color);
             }
 

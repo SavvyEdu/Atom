@@ -9997,6 +9997,8 @@ MonoBehaviour:
   - {fileID: 7201937373677103007, guid: 9b0e6170cf381424e978289aa52109d6, type: 3}
   - {fileID: 3382438003854859704, guid: 72ee8f59d470ab44aa878a65a6b44b36, type: 3}
   - {fileID: 6202506893403512911, guid: 4f2b9017de157224e84749f8fb1ed057, type: 3}
+  mat_transparent: {fileID: 2100000, guid: 576741a163c735f4da9ed666bf3dc53f, type: 2}
+  mat_solid: {fileID: 2100000, guid: 8e9c48daa0e6bf44cb265feb25beb8ce, type: 2}
 --- !u!4 &937277853
 Transform:
   m_ObjectHideFlags: 0

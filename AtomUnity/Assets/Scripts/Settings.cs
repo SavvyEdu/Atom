@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum SettingsMaterial { Solid, Transparent }
+
 public class Settings : MonoBehaviour
 {
-
     [Header("Simulation")]
 
     [SerializeField] private Toggle shakeToggle;
@@ -38,11 +39,15 @@ public class Settings : MonoBehaviour
     [SerializeField] private Toggle allOrbitalsToggle;
     public static bool ORBITALS_ALL = true;
 
-    [SerializeField] private Button restoreButton;
+    [SerializeField] private TypeSelect materialSelect;
+    public static SettingsMaterial MATERIAL = SettingsMaterial.Solid;
 
+    [SerializeField] private Button restoreButton;
 
     private void Awake()
     {
+        materialSelect.SetType<SettingsMaterial>();
+
         //set defaluts 
         shakeToggle.isOn = SHAKE;
         orbitToggle.isOn = ORBIT;
@@ -55,6 +60,7 @@ public class Settings : MonoBehaviour
         orbitalsToggle.isOn = ORBITALS;
         axisToggle.isOn = AXIS;
         allOrbitalsToggle.isOn = ORBITALS_ALL;
+        materialSelect.SetValue(SettingsMaterial.Solid);
 
         //update settings
         shakeToggle.onValueChanged.AddListener((bool v) => SHAKE = v);
@@ -68,6 +74,7 @@ public class Settings : MonoBehaviour
         orbitalsToggle.onValueChanged.AddListener((bool v) => ORBITALS = v);
         axisToggle.onValueChanged.AddListener((bool v) => AXIS = v);
         allOrbitalsToggle.onValueChanged.AddListener((bool v) => ORBITALS_ALL = v);
+        materialSelect.onValueChanged.AddListener(() => MATERIAL = materialSelect.GetValue<SettingsMaterial>());
         restoreButton.onClick.AddListener(SetToDefault);
     }
 
@@ -84,7 +91,7 @@ public class Settings : MonoBehaviour
         orbitalsToggle.isOn = ORBITALS = true;
         axisToggle.isOn = AXIS = false;
         allOrbitalsToggle.isOn = ORBITALS_ALL = false;
-
+        materialSelect.SetValue(SettingsMaterial.Solid);
     }
 
     private void Start()
