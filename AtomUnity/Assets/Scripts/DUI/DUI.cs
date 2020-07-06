@@ -73,20 +73,42 @@ namespace DUI //Dimensional User Interface
                     buttonOver.OnClick?.Invoke();
                 }
             }
+
+            if (Input.GetMouseButton(0) && buttonOver != null && buttonOver.OnDrag != null)
+            {
+                buttonOver?.OnDrag(inputPosPrev - inputPos);
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                buttonOver = null;
+            }
+
 #elif UNITY_ANDROID || UNITY_IOS
             if (Input.touchCount > 0) //make sure there are touches
             {
                 inputPos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
                 inputPos.z = 0;
 
+                TouchPhase phase = Input.GetTouch(0).phase;
+
                 RaycastHit hit;
                 if (Physics.Raycast(inputPos + Vector3.back * 10, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
                 {
-                    if (Input.GetMouseButtonDown(0) && (buttonOver = hit.transform.GetComponent<DUIButton>()) != null)
+                    if (Input.GetTouch(0).phase == TouchPhase.Began && (buttonOver = hit.transform.GetComponent<DUIButton>()) != null)
                     {
                         buttonOver.OnClick?.Invoke();
                     }
                 }
+
+                if ((phase == TouchPhase.Moved || phase == TouchPhase.Stationary) && buttonOver != null && buttonOver.OnDrag != null)
+                {
+                    buttonOver?.OnDrag(inputPosPrev - inputPos);
+                }
+
+            }
+            else
+            {
+                buttonOver = null;
             }
 #endif  
         }
