@@ -83,12 +83,19 @@ namespace Atom {
                     {
                         currentElectronCount++;
                         data = orbitalMap[currentElectronCount];
-                        data.obj.SetActive(true);
+                        //active andOr recolor
+                        if(data.ms == -1)
+                            data.obj.SetActive(true);
+                        AssignMaterial(data.obj, data.l, data.ms);
                     }
                     //Remove Orbitals
                     while (electronCount < currentElectronCount)
                     {
-                        data.obj.SetActive(false);
+                        //deactive or recolor
+                        if (data.ms == -1)
+                            data.obj.SetActive(false);
+                        else if(electronCount > 0)
+                            AssignMaterial(data.obj, data.l, -1); //revert color
                         currentElectronCount--;
                         data = orbitalMap[currentElectronCount];
                     }
@@ -99,10 +106,11 @@ namespace Atom {
                     if (currentElectronCount != 0)
                         data.obj.SetActive(false);
 
-                    //activate the new
+                    //activate the new and recolor
                     data = orbitalMap[electronCount];
                     if (electronCount > 0)
                         data.obj.SetActive(true);
+                    AssignMaterial(data.obj, data.l, data.ms);
                 }
 
                 //unpdate the orbital data
@@ -162,55 +170,70 @@ namespace Atom {
         /// <param name="ml">obital [-3, 3] </param>
         public GameObject CreateOrbital(int electronCount, int n, int l, int ml, int ms)
         {
+            GameObject obj;
+
+            //orbital has been added, assign reference
+            if (ms == 1)
+            {
+                obj = orbitalMap[electronCount - (2 * l + 1)].obj; // 2L + 1 => 1,3,5,7
+                orbitalMap[electronCount] = new OrbitalData(obj, n, l, ml, ms);
+                return obj;
+            }
+            
             GameObject orbital = null;
             float scale = n;
 
-            if (l == 0)
+            switch (l)
             {
-                orbital = sOrbitals[ml];
-                scale = 1f * n;
-            }
-            else if (l == 1)
-            {
-                orbital = pOrbitals[ml + 1];
-                scale = 1.33f * n;
-            }
-            else if (l == 2)
-            {
-                orbital = dOrbitals[ml + 2];
-                scale = 1.5f * n;
-            }
-            else if (l == 3)
-            {
-                orbital = fOrbitals[ml + 3];
-                scale = 2.0f * n-1;
+                case 0:
+                    orbital = sOrbitals[ml];
+                    scale = 1f * n;
+                    break;
+                case 1:
+                    orbital = pOrbitals[ml + 1];
+                    scale = 1.33f * n;
+                    break;
+                case 2:
+                    orbital = dOrbitals[ml + 2];
+                    scale = 1.5f * n;
+                    break;
+                case 3:
+                    orbital = fOrbitals[ml + 3];
+                    scale = 2.0f * n - 1;
+                    break;
             }
 
-            GameObject obj = Instantiate(orbital, Vector3.zero, Quaternion.identity, root);
+            obj = Instantiate(orbital, Vector3.zero, Quaternion.identity, root);
             obj.transform.localPosition = Vector3.zero;
             obj.transform.localScale = Vector3.one * scale;
 
             //set the appropriate spdf color
-            Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
-            Color color = BlockTypeUtil.ColorFromBlock((BlockType)l);
-            foreach (Renderer r in renderers)
-            {
-                switch (Settings.MATERIAL)
-                {
-                    case SettingsMaterial.Solid: 
-                        r.material = mat_solid; 
-                        break;
-                    case SettingsMaterial.Transparent: 
-                        r.material = mat_transparent;
-                        color /= 4;
-                        break;
-                }
-                r.material.SetColor("_Color", color);
-            }
+            //AssignMaterial(obj, l, ms);
 
             obj.SetActive(false);
             orbitalMap[electronCount] = new OrbitalData(obj, n, l, ml, ms); //assign to array
             return obj;
+        }
+
+        /// <summary>
+        /// Color the object based on l and ms
+        /// </summary>
+        private void AssignMaterial(GameObject obj, int l, int ms)
+        {
+            Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+            Color color = BlockTypeUtil.ColorFromBlock((BlockType)l);
+            if (Settings.MATERIAL == SettingsMaterial.Transparent) { color /= 3; }
+            if(ms == -1) { color /= 2; }
+            Debug.Log(ms);
+            foreach (Renderer r in renderers)
+            {
+                switch (Settings.MATERIAL)
+                {
+                    case SettingsMaterial.Solid: r.material = mat_solid; break;
+                    case SettingsMaterial.Transparent: r.material = mat_transparent; break;
+                }
+                r.material.SetColor("_Color", color);
+            }
         }
 
         public void AdjustScale()
