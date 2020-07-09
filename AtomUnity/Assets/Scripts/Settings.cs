@@ -37,7 +37,7 @@ public class Settings : MonoBehaviour
     public static bool AXIS = true;
 
     [SerializeField] private Toggle allOrbitalsToggle;
-    public static bool ORBITALS_ALL = true;
+    public static bool ORBITALS_ALL = false;
 
     [SerializeField] private TypeSelect materialSelect;
     public static SettingsMaterial MATERIAL = SettingsMaterial.Solid;
@@ -89,7 +89,7 @@ public class Settings : MonoBehaviour
         musicSlider.value = MUSIC_VOLUME = 0.5f;
 
         orbitalsToggle.isOn = ORBITALS = true;
-        axisToggle.isOn = AXIS = false;
+        axisToggle.isOn = AXIS = true;
         allOrbitalsToggle.isOn = ORBITALS_ALL = false;
         materialSelect.SetValue(SettingsMaterial.Solid);
     }

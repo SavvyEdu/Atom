@@ -22,8 +22,7 @@ public class SwapButton : MonoBehaviour
         t1Active?.Invoke();
 
         Transition transition = FindObjectOfType<Transition>();
-        Button button = GetComponentInChildren<Button>();
-
+        Button button = GetComponent<Button>();
         button.onClick.AddListener(() =>
         {
             //make sure transitioner is not already transitioning
@@ -40,7 +39,6 @@ public class SwapButton : MonoBehaviour
                     t1Active?.Invoke();
                 }
             }
-            
         });
     }
 }

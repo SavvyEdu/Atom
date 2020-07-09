@@ -15,7 +15,11 @@ public class TypeSelect : MonoBehaviour
 
     private int index = 0;
     public T GetValue<T>() => (T)(object)index;
-    public void SetValue<T>(T value) => index = (int)(object)value;
+    public void SetValue<T>(T value) {
+        index = (int)(object)value;
+        text.text = options[index];
+        onValueChanged?.Invoke();
+    }
 
     public UnityEvent onValueChanged;
 

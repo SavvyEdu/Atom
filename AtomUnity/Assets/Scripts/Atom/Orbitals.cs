@@ -38,7 +38,7 @@ namespace Atom {
 
         private OrbitalData[] orbitalMap = new OrbitalData[119]; 
 
-        public static Action<int, int, int, int> OnUpdtae;
+        public static Action<int, int, int, int> OnUpdate;
 
         private void Awake()
         {
@@ -61,7 +61,6 @@ namespace Atom {
             
             m_collider.size = m_anchor.Bounds.size;
 
-            //turn on/off the Axis
             foreach (Transform a in axis) 
                 a.gameObject.SetActive(Settings.AXIS);
         }
@@ -116,7 +115,7 @@ namespace Atom {
                 //unpdate the orbital data
                 currentOrbital = data.obj;
                 currentElectronCount = electronCount;
-                OnUpdtae?.Invoke(data.n, data.l, data.ml, data.ms);
+                OnUpdate?.Invoke(data.n, data.l, data.ml, data.ms);
 
                 //Adjust the display
                 AdjustScale();
@@ -168,6 +167,7 @@ namespace Atom {
         /// <param name="n">Shell [1, 7] </param>
         /// <param name="l">SPDF [0, 3] </param>
         /// <param name="ml">obital [-3, 3] </param>
+        /// <param name="ms">spin [-1 1]</param>
         public GameObject CreateOrbital(int electronCount, int n, int l, int ml, int ms)
         {
             GameObject obj;
@@ -180,35 +180,31 @@ namespace Atom {
                 return obj;
             }
             
-            GameObject orbital = null;
+            GameObject orbitalPrefab = null;
             float scale = n;
-
             switch (l)
             {
                 case 0:
-                    orbital = sOrbitals[ml];
+                    orbitalPrefab = sOrbitals[ml];
                     scale = 1f * n;
                     break;
                 case 1:
-                    orbital = pOrbitals[ml + 1];
+                    orbitalPrefab = pOrbitals[ml + 1];
                     scale = 1.33f * n;
                     break;
                 case 2:
-                    orbital = dOrbitals[ml + 2];
+                    orbitalPrefab = dOrbitals[ml + 2];
                     scale = 1.5f * n;
                     break;
                 case 3:
-                    orbital = fOrbitals[ml + 3];
+                    orbitalPrefab = fOrbitals[ml + 3];
                     scale = 2.0f * n - 1;
                     break;
             }
 
-            obj = Instantiate(orbital, Vector3.zero, Quaternion.identity, root);
+            obj = Instantiate(orbitalPrefab, Vector3.zero, Quaternion.identity, root);
             obj.transform.localPosition = Vector3.zero;
             obj.transform.localScale = Vector3.one * scale;
-
-            //set the appropriate spdf color
-            //AssignMaterial(obj, l, ms);
 
             obj.SetActive(false);
             orbitalMap[electronCount] = new OrbitalData(obj, n, l, ml, ms); //assign to array
@@ -220,11 +216,10 @@ namespace Atom {
         /// </summary>
         private void AssignMaterial(GameObject obj, int l, int ms)
         {
-            Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
-            Color color = BlockTypeUtil.ColorFromBlock((BlockType)l);
-            if (Settings.MATERIAL == SettingsMaterial.Transparent) { color /= 3; }
-            if(ms == -1) { color /= 2; }
-            Debug.Log(ms);
+            Renderer[] renderers = obj.GetComponentsInChildren<Renderer>(); //get all the renderers
+            Color color = BlockTypeUtil.ColorFromBlock((BlockType)l); //get color from (l)
+            if (Settings.MATERIAL == SettingsMaterial.Transparent) { color /= 3; } //tone down transparency
+            if(ms == -1) { color /= 2; } //tone down for one electron in shell
             foreach (Renderer r in renderers)
             {
                 switch (Settings.MATERIAL)

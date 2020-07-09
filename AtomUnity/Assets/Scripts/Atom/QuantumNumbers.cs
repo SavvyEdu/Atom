@@ -13,7 +13,7 @@ public class QuantumNumbers : MonoBehaviour
 
     private void Awake()
     {
-        Orbitals.OnUpdtae += UpdateNumbers;
+        Orbitals.OnUpdate += UpdateNumbers;
     }
 
     public void UpdateNumbers(int n, int l, int ml, int ms)
@@ -22,5 +22,10 @@ public class QuantumNumbers : MonoBehaviour
         lText.text = l.ToString();
         mlText.text = ml.ToString();
         msText.text = ms == 0 ? "-1/2" : "1/2";
+    }
+
+    private void OnDestroy()
+    {
+        Orbitals.OnUpdate -= UpdateNumbers;
     }
 }
