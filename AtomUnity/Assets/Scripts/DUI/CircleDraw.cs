@@ -16,20 +16,17 @@ public class CircleDraw : MonoBehaviour
 
     public void Draw(float radius, float lineWidth)
     {
-        lineRender.startWidth = lineWidth;
-
-        float x;
-        float y;
-        float angle = 0;
+        lineRender.startWidth = lineWidth; //set the line wideth 
+        
+        float angle = 0; //temp variables
 
         for (int i = 0; i < (SEGMENTS + 1); i++)
         {
-            x = Mathf.Sin(angle) * radius;
-            y = Mathf.Cos(angle) * radius;
+            lineRender.SetPosition(i, new Vector3(Mathf.Sin(angle) * radius, 
+                                                  Mathf.Cos(angle) * radius, 0));
 
-            lineRender.SetPosition(i, new Vector3(x, y, 0));
-
-            angle += Mathf.PI * 2 / SEGMENTS;
+            angle += Mathf.PI * 2 / SEGMENTS; //increase the angle
         }
+        Debug.Log(lineWidth + " - " + lineRender.positionCount);
     }
 }

@@ -60,7 +60,7 @@ public class Settings : MonoBehaviour
         orbitalsToggle.isOn = ORBITALS;
         axisToggle.isOn = AXIS;
         allOrbitalsToggle.isOn = ORBITALS_ALL;
-        materialSelect.SetValue(SettingsMaterial.Solid);
+        materialSelect.SetValue(MATERIAL);
 
         //update settings
         shakeToggle.onValueChanged.AddListener((bool v) => SHAKE = v);
@@ -91,7 +91,7 @@ public class Settings : MonoBehaviour
         orbitalsToggle.isOn = ORBITALS = true;
         axisToggle.isOn = AXIS = true;
         allOrbitalsToggle.isOn = ORBITALS_ALL = false;
-        materialSelect.SetValue(SettingsMaterial.Solid);
+        materialSelect.SetValue(MATERIAL= SettingsMaterial.Solid);
     }
 
     private void Start()

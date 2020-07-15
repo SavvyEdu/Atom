@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Proton
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 56d4bc5eaa8919045b43261a9c0c595b, type: 3}
   m_ShaderKeywords: _EMISSION _GLOSSYREFLECTIONS_OFF _SPECULARHIGHLIGHTS_OFF
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
@@ -79,5 +79,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 0.32877392, b: 0.17000002, a: 1}
+    - _Emission: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 1, g: 0.088655606, b: 0.02415763, a: 1}
+    - _Emit: {r: 1, g: 0.088655606, b: 0.02415763, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}

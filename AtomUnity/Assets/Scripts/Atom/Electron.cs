@@ -9,6 +9,9 @@ namespace Atom
         /// <summary>
         /// Handles the behavior of electron particles in the atom
         /// </summary>
+        
+
+        public Renderer Render { get; private set; }
 
         //get and set the radius in Unity Units
         public new float Radius
@@ -16,13 +19,13 @@ namespace Atom
             get { return transform.localScale.x / 2; }
             set {
                 transform.localScale = Vector3.one * 2.0f * value;
-                GetComponent<TrailRenderer>().startWidth = value;
             }
         }
 
         protected override void Awake()
         {
             base.Awake();
+            Render = GetComponent<Renderer>();
             Radius = 0.25f;
         }
 

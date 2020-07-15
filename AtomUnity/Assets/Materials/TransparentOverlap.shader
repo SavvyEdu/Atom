@@ -8,7 +8,9 @@
 		ZWrite Off
 		Tags {Queue = Transparent}
 		//Blend One One
-		Blend DstColor OneMinusSrcAlpha //??? no idea why
+		//Blend DstColor OneMinusSrcAlpha //??? no idea why
+		//Blend DstAlpha OneMinusSrcColor
+		Blend DstAlpha SrcColor
 		Color[_Color]
 		SubShader {
 			Pass {

@@ -85,7 +85,7 @@ namespace Atom {
                         //active andOr recolor
                         if(data.ms == -1)
                             data.obj.SetActive(true);
-                        AssignMaterial(data.obj, data.l, data.ms);
+                        AdjustColor(data.obj, data.l, data.ms);
                     }
                     //Remove Orbitals
                     while (electronCount < currentElectronCount)
@@ -94,7 +94,7 @@ namespace Atom {
                         if (data.ms == -1)
                             data.obj.SetActive(false);
                         else if(electronCount > 0)
-                            AssignMaterial(data.obj, data.l, -1); //revert color
+                            AdjustColor(data.obj, data.l, -1); //revert color
                         currentElectronCount--;
                         data = orbitalMap[currentElectronCount];
                     }
@@ -109,7 +109,7 @@ namespace Atom {
                     data = orbitalMap[electronCount];
                     if (electronCount > 0)
                         data.obj.SetActive(true);
-                    AssignMaterial(data.obj, data.l, data.ms);
+                    AdjustColor(data.obj, data.l, data.ms);
                 }
 
                 //unpdate the orbital data
@@ -206,6 +206,16 @@ namespace Atom {
             obj.transform.localPosition = Vector3.zero;
             obj.transform.localScale = Vector3.one * scale;
 
+            Renderer[] renderers = obj.GetComponentsInChildren<Renderer>(); //get all the renderers
+            foreach (Renderer r in renderers)
+            {
+                switch (Settings.MATERIAL)
+                {
+                    case SettingsMaterial.Solid: r.material = mat_solid; break;
+                    case SettingsMaterial.Transparent: r.material = mat_transparent; break;
+                }
+            }
+
             obj.SetActive(false);
             orbitalMap[electronCount] = new OrbitalData(obj, n, l, ml, ms); //assign to array
             return obj;
@@ -214,19 +224,15 @@ namespace Atom {
         /// <summary>
         /// Color the object based on l and ms
         /// </summary>
-        private void AssignMaterial(GameObject obj, int l, int ms)
+        private void AdjustColor(GameObject obj, int l, int ms)
         {
             Renderer[] renderers = obj.GetComponentsInChildren<Renderer>(); //get all the renderers
             Color color = BlockTypeUtil.ColorFromBlock((BlockType)l); //get color from (l)
-            if (Settings.MATERIAL == SettingsMaterial.Transparent) { color /= 3; } //tone down transparency
-            if(ms == -1) { color /= 2; } //tone down for one electron in shell
+            if (Settings.MATERIAL == SettingsMaterial.Transparent) { color = Color.Lerp(color, new Color(1, 1, 1), 0.8f); color.a = 0.3f; } //tone down transparency
+            //if (ms == -1) { color.r /= 2; color.g /= 2; color.b /= 2; } //tone down for one electron in shell
+            if (ms == -1) { color -= new Color(0.3f, 0.3f, 0.3f, 0f); } //tone down for one electron in shell
             foreach (Renderer r in renderers)
             {
-                switch (Settings.MATERIAL)
-                {
-                    case SettingsMaterial.Solid: r.material = mat_solid; break;
-                    case SettingsMaterial.Transparent: r.material = mat_transparent; break;
-                }
                 r.material.SetColor("_Color", color);
             }
         }

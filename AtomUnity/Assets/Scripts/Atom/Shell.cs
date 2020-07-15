@@ -128,7 +128,7 @@ namespace Atom
         public bool RemoveParticle(Particle particle)
         {
             //make sure the particle is an electron and actually in this shell
-            if (particle is Electron && particles.Contains(particle))
+            if (particles.Contains(particle))
             {
                 //remove particle from this layer
                 Remove(particle);
@@ -194,12 +194,19 @@ namespace Atom
         {
             if (Settings.COLOR)
             {
+                Color c;
+                Renderer rend;
                 for (int i = 0, len = ElectronCount; i < len; i++)
                 {
-                    if (i < 2) particles[i].GetComponent<Renderer>().material.color = BlockTypeUtil.ColorFromBlock(BlockType.sBlock);
-                    else if (i < 8) particles[i].GetComponent<Renderer>().material.color = BlockTypeUtil.ColorFromBlock(BlockType.pBlock);
-                    else if (i < 18) particles[i].GetComponent<Renderer>().material.color = BlockTypeUtil.ColorFromBlock(BlockType.dBlock);
-                    else particles[i].GetComponent<Renderer>().material.color = BlockTypeUtil.ColorFromBlock(BlockType.fBlock);
+                    rend = (particles[i] as Electron).Render;
+
+                    if (i < 2) c = BlockTypeUtil.ColorFromBlock(BlockType.sBlock);
+                    else if (i < 8) c = BlockTypeUtil.ColorFromBlock(BlockType.pBlock);
+                    else if (i < 18) c = BlockTypeUtil.ColorFromBlock(BlockType.dBlock);
+                    else c = BlockTypeUtil.ColorFromBlock(BlockType.fBlock);
+
+                    rend.material.SetColor("_Color", c);
+                    rend.material.SetColor("_EmissionColor", c/4);
                 }
             }
         }

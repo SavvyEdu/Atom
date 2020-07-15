@@ -42,9 +42,8 @@ public class Transition : MonoBehaviour
         {
             currLerpTime += Time.deltaTime;
             if (currLerpTime > lerpTime)
-            {
                 currLerpTime = lerpTime;
-            }
+
             float p = currLerpTime / lerpTime;
             p = p * p * (3f - 2f * p); //smooth step
             //p = p*p*p*(p*(p*6-15)+10); //smoother step
