@@ -16,11 +16,23 @@ namespace Atom
 
         private void Update()
         {
-            SetSymbol(atom.Element, atom.Nucleus.ProtonCount, atom.Nucleus.Mass, atom.ElectronCount);
+            if (atom) //update to match the current Atom
+            {
+                SetSymbol(atom.Element, atom.Nucleus.ProtonCount, atom.Nucleus.Mass, atom.ElectronCount);
+            }
         }
 
         /// <summary>
-        /// Sets the UI elements based element data
+        /// Sets the UI elements based on an element common data 
+        /// </summary>
+        /// <param name="element">Element data</param>
+        public void SetSymbol(Element element)
+        {
+            SetSymbol(element, element.AtomicNumber, element.Common.Mass, element.AtomicNumber);
+        }
+
+        /// <summary>
+        /// Sets the UI elements based atom data
         /// </summary>
         /// <param name="element">Element data</param>
         /// <param name="protonCount">number of protons in atom</param>

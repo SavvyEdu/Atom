@@ -14,9 +14,13 @@ namespace Atom {
         /// <returns>element dat</returns>
         public static Element[] Load()
         {
+            //Load in the file
             TextAsset textAsset = Resources.Load("Elements") as TextAsset;
+
+            //Create the returned array
             Element[] elements = new Element[118];
 
+            //Create a temp isotope list
             List<Isotope> isotopes = new List<Isotope>(); //temp list of isotopes
 
             string[] lines = textAsset.text.Split('\n');
@@ -37,10 +41,12 @@ namespace Atom {
                     }
                 }
 
+                //parse out the type and block
                 BlockType block = BlockTypeUtil.StringToBlockType[cells[4]];
                 ElementType type = ElementTypeUtil.StringToElementType[cells[9]];
 
-                elements[e - 1] = new Element(cells[1], cells[2], type, block, isotopes.ToArray());
+                //add element with name, abbreviation, atomic num, type, block, and isotopes
+                elements[e - 1] = new Element(cells[1], cells[2], e, type, block, isotopes.ToArray());
             }
             return elements;
         }

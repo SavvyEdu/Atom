@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AtomsAndVoid.unity
     guid: 5470a365f32f52c4f81bcc4b20be732b
+  - enabled: 1
+    path: Assets/Scenes/Dalton.unity
+    guid: 49ec990c9bbed71459507d92e3e9d72b
   m_configObjects: {}

@@ -27,6 +27,5 @@ public class CircleDraw : MonoBehaviour
 
             angle += Mathf.PI * 2 / SEGMENTS; //increase the angle
         }
-        Debug.Log(lineWidth + " - " + lineRender.positionCount);
     }
 }

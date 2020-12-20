@@ -55,15 +55,17 @@ namespace Atom
     {
         public string Name { get; }
         public string Abbreviation { get; }
+        public int AtomicNumber { get; }
         public BlockType Block { get; }
         public ElementType Type { get; }
         public Isotope[] Isotopes { get; }
         public Isotope Common { get; }
 
-        public Element(string name, string abbreviation, ElementType type, BlockType block, Isotope[] isotopes = null)
+        public Element(string name, string abbreviation, int atomicNumber, ElementType type, BlockType block, Isotope[] isotopes = null)
         {
             Name = name;
             Abbreviation = abbreviation;
+            AtomicNumber = atomicNumber;
             Type = type;
             Block = block;
             Isotopes = isotopes;
