@@ -14,7 +14,7 @@ public class ModuleBase : MonoBehaviour
 
     protected Action<int> OnChange;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         BackButton.onClick.AddListener(BackClick);
         NextButton.onClick.AddListener(NextClick);

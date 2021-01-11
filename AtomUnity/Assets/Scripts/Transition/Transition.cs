@@ -58,7 +58,7 @@ public class Transition : MonoBehaviour
             }
 
             transitions[index].atomTransition.atom.AdjustScale();
-            transitions[index].atomTransition.orbitals.AdjustScale();
+            transitions[index].atomTransition.orbitals?.AdjustScale();
             
             yield return new WaitForEndOfFrame();
         }
@@ -80,7 +80,7 @@ public class Transition : MonoBehaviour
         }
 
         transitions[index].atomTransition.atom.AdjustScale();
-        transitions[index].atomTransition.orbitals.AdjustScale();
+        transitions[index].atomTransition.orbitals?.AdjustScale();
         transitions[index].atomTransition.atom.Interactable = transitions[index].atomTransition.interactable;
         Transitioning = false;
     }

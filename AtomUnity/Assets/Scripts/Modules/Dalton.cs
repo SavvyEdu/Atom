@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Atom;
+using DUI;
 
 public class Dalton : ModuleBase
 {
@@ -13,6 +14,16 @@ public class Dalton : ModuleBase
     [SerializeField] private Text dElementName;
     [SerializeField] private Text dElementWeight;
     [SerializeField] private AtomicSymbol dElementAtomicSymbol;
+
+    [Header("Conservation of Mass Sim")]
+    [SerializeField] private GameObject cofmSim;
+    [SerializeField] private GameObject[] cofmSimWalls;
+    private DUIAnchor CofMSimAnchor;
+    [SerializeField] private GameObject CofMSimTemplate;
+    [SerializeField] private Color c1, c2;
+    private bool simulateVoid = true;
+    private List<Rigidbody2D> cofmSimObjects;
+    private const int SIM_COUNT = 50;
 
     private struct DaltonElement { 
 
@@ -29,8 +40,10 @@ public class Dalton : ModuleBase
     }
 
     DaltonElement[] daltonElements;
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         //get the dalton element information (called in Awake because of GetElement)
         daltonElements = new DaltonElement[20]{
             new DaltonElement("Hydrogen",   1, Elements.GetElement(1)),
@@ -56,9 +69,22 @@ public class Dalton : ModuleBase
         };
     }
 
-
     private void Start()
     {
+        CofMSimAnchor = cofmSim.GetComponent<DUIAnchor>();
+        cofmSimObjects = new List<Rigidbody2D>();
+        CofMSimTemplate.SetActive(false);
+
+        foreach (GameObject wall in cofmSimWalls)
+        {
+            BoxCollider collider = wall.GetComponent<BoxCollider>();
+            DUIAnchor anchor = wall.GetComponent<DUIAnchor>();
+
+            wall.transform.localScale = anchor.Bounds.size;
+        }
+
+        StartCoroutine(RunConservationOfMassSim());
+
         //get all the element buttons
         Button[] daltonButtons = buttonGroup.GetComponentsInChildren<Button>();
 
@@ -81,5 +107,56 @@ public class Dalton : ModuleBase
 
         //Invoke event for first element
         daltonButtons[0].onClick?.Invoke();
+    }
+
+
+
+    private IEnumerator RunConservationOfMassSim()
+    {
+        cofmSim.SetActive(true);
+        for (int i = 0; i < SIM_COUNT; i++)
+        {
+            GameObject obj;
+            //get existing object
+            if (cofmSimObjects.Count == SIM_COUNT)
+            {
+                obj = cofmSimObjects[i].gameObject;
+            }
+            //make new object 
+            else
+            {
+                Vector2 randPos = new Vector2(Random.Range(CofMSimAnchor.Bounds.min.x, CofMSimAnchor.Bounds.max.x),
+                                              Random.Range(CofMSimAnchor.Bounds.min.y, CofMSimAnchor.Bounds.max.y)) * 0.95f;
+
+                obj = Instantiate(CofMSimTemplate, randPos, Quaternion.identity, cofmSim.transform);
+                cofmSimObjects.Add(obj.GetComponent<Rigidbody2D>());
+                obj.SetActive(true);
+            }
+
+            //apply a random force
+            //obj.GetComponent<Rigidbody2D>().velocity = Random.insideUnitCircle * 10;
+        }
+
+        while (simulateVoid)
+        {
+            Debug.DrawLine(Vector2.zero, (Vector2)DUI.DUI.inputPos, Color.red, 0.5f);
+            foreach (Rigidbody2D rb2d in cofmSimObjects)
+            {
+                Vector2 diff = rb2d.transform.position - DUI.DUI.inputPos;
+                Vector2 force = new Vector2(1 / (diff.x+0.5f), 1 / (diff.y+0.5f)) * 0.5f;
+                rb2d.AddForce(force, ForceMode2D.Force);
+
+                
+                //Keep in Bounds of DUI Anchor
+                Vector2 pos = rb2d.transform.position;
+                pos.x = Mathf.Clamp(pos.x, CofMSimAnchor.Bounds.min.x, CofMSimAnchor.Bounds.max.x);
+                pos.y = Mathf.Clamp(pos.y, CofMSimAnchor.Bounds.min.y, CofMSimAnchor.Bounds.max.y);
+                rb2d.transform.position = pos;
+
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+        cofmSim.SetActive(false);
     }
 }

@@ -14,6 +14,10 @@ namespace Atom
         [SerializeField] private Text massNumberUI;
         [SerializeField] private Text chargeUI;
 
+        public Color atomicNumberColor { set { atomicNumberUI.color = value; } }
+        public Color massNumberColor { set { massNumberUI.color = value; } }
+        public Color chargeColor { set { chargeUI.color = value; } }
+
         private void Update()
         {
             if (atom) //update to match the current Atom
