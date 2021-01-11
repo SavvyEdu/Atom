@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/FreePlay.unity
     guid: a34ab8bb51a43d84c94287612ca04f1a
   - enabled: 1
+    path: Assets/Scenes/MatchGame.unity
+    guid: f2b9ec253c8ddec438e5cc2d6de77b06
+  - enabled: 1
     path: Assets/Scenes/Quickstart.unity
     guid: 34c6ff9a51ce77b4f90dc50e88b1a9e6
   - enabled: 1

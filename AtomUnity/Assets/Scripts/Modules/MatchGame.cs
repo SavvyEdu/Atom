@@ -14,13 +14,16 @@ public class MatchGame : MonoBehaviour
 
     int targetProtons, targetNeutrons, targetElectrons;
 
+    private AudioSource audioSource;
+
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
+
+
         SetRandomTarget();
 
-        targetSymbol.atomicNumberColor = Colors.blue;
-        targetSymbol.massNumberColor = Colors.blue;
-        targetSymbol.chargeColor = Colors.blue;
+        targetSymbol.SetUIColors(Colors.blue, true, true, true, true, true);
     }
 
     private void Update()
@@ -29,13 +32,22 @@ public class MatchGame : MonoBehaviour
         bool nMatch = atom.Nucleus.NeutronCount == targetNeutrons;
         bool eMatch = atom.ElectronCount == targetElectrons;
 
-        atomSymbol.atomicNumberColor = pMatch ? Colors.blue : Colors.darkGrey;
-        atomSymbol.massNumberColor = pMatch && nMatch ? Colors.blue : Colors.darkGrey;
-        atomSymbol.chargeColor = eMatch ? Colors.blue : Colors.darkGrey;
+        atomSymbol.SetUIColors( 
+            c: Colors.blue,
+            name: pMatch && nMatch && eMatch, 
+            abb: pMatch && nMatch && eMatch, 
+            number: pMatch, 
+            mass: pMatch && nMatch, 
+            charge: eMatch);
 
         if (pMatch && nMatch && eMatch)
         {
-            Debug.Log("NICE!");
+            // Play the completed SFX
+            audioSource.Play();
+
+            //Visual glow
+
+
             SetRandomTarget();
         }
     }

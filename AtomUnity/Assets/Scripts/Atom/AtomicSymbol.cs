@@ -14,9 +14,14 @@ namespace Atom
         [SerializeField] private Text massNumberUI;
         [SerializeField] private Text chargeUI;
 
-        public Color atomicNumberColor { set { atomicNumberUI.color = value; } }
-        public Color massNumberColor { set { massNumberUI.color = value; } }
-        public Color chargeColor { set { chargeUI.color = value; } }
+        public void SetUIColors(Color c, bool name, bool abb, bool number, bool mass, bool charge)
+        {
+            nameUI.color = name ? c : Colors.darkGrey;
+            abbreviationUI.color = abb ? c : Colors.darkGrey;
+            atomicNumberUI.color = number ? c : Colors.darkGrey;
+            massNumberUI.color = mass ? c : Colors.darkGrey;
+            chargeUI.color = charge ? c : Colors.darkGrey;
+        }
 
         private void Update()
         {
