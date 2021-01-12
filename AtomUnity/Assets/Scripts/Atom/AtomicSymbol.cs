@@ -16,11 +16,11 @@ namespace Atom
 
         public void SetUIColors(Color c, bool name, bool abb, bool number, bool mass, bool charge)
         {
-            nameUI.color = name ? c : Colors.darkGrey;
-            abbreviationUI.color = abb ? c : Colors.darkGrey;
-            atomicNumberUI.color = number ? c : Colors.darkGrey;
-            massNumberUI.color = mass ? c : Colors.darkGrey;
-            chargeUI.color = charge ? c : Colors.darkGrey;
+            nameUI.color = name ? c : UIColors.darkGrey;
+            abbreviationUI.color = abb ? c : UIColors.darkGrey;
+            atomicNumberUI.color = number ? c : UIColors.darkGrey;
+            massNumberUI.color = mass ? c : UIColors.darkGrey;
+            chargeUI.color = charge ? c : UIColors.darkGrey;
         }
 
         private void Update()
