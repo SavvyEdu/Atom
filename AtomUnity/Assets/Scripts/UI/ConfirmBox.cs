@@ -18,7 +18,6 @@ public class ConfirmBox : MonoBehaviour
     private void Awake()
     {
         cancelButton.onClick.AddListener(() => gameObject.SetActive(false));
-        gameObject.SetActive(false);
     }
     public void ShowConfirm(UnityAction action, string message)
     {
