@@ -53,6 +53,8 @@ public class MatchGame : MonoBehaviour
         targetSymbol.SetUIColors(UIColors.blue, true, true, true, true, true);
 
         atom.Interactable = false;
+
+        Random.InitState((int)Time.time);
     }
 
     private void Start()
@@ -129,7 +131,7 @@ public class MatchGame : MonoBehaviour
 
     private IEnumerator Coutdown()
     {
-        int t = challenge ? 60 : 12;
+        int t = challenge ? 60 : 120;
         while(t > 0)
         {
             yield return new WaitForSeconds(1);

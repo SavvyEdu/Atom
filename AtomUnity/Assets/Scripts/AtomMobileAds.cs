@@ -8,8 +8,6 @@ using GoogleMobileAds.Api;
 /// </summary>
 public class AtomMobileAds : MonoBehaviour
 {
-#if UNITY_IOS || UNITY_ANDROID
-
     private InterstitialAd interstitial;
     void Start()
     {
@@ -28,9 +26,9 @@ public class AtomMobileAds : MonoBehaviour
 #if UNITY_ANDROID
         string adUnitId = "ca-app-pub-1691376898912539/1533815312";
 #elif UNITY_IPHONE
-        string adUnitId = "ca-app-pub-3940256099942544/4411468910";*/
+        string adUnitId = "ca-app-pub-3940256099942544/4411468910";
 #else
-        string adUnitId = "unexpected_platform";
+        string adUnitId = "ca-app-pub-3940256099942544/1033173712";
 #endif
         // Initialize an InterstitialAd.
         this.interstitial = new InterstitialAd(adUnitId);
@@ -52,6 +50,7 @@ public class AtomMobileAds : MonoBehaviour
         
         // Load the interstitial with the request.
         this.interstitial.LoadAd(request);
+
     }
 
     public void ShowInterstitial()
@@ -66,7 +65,4 @@ public class AtomMobileAds : MonoBehaviour
     {
         interstitial.Destroy();
     }
-
-#endif
-
 }
