@@ -32,11 +32,12 @@ public class MatchGame : GameBase
     {
         base.Awake();
 
+        tutorialUI.playButton.onClick.AddListener(StartGame);
+
         starImages = stars.GetComponentsInChildren<SVGImage>();
 
         glowEffect.gameObject.SetActive(false); //hide the gloweffect
         
-
         //make the text color for target symbol blue
         targetSymbol.SetUIColors(UIColors.blue, true, true, true, true, true);
 
@@ -103,7 +104,7 @@ public class MatchGame : GameBase
                 ResetGame();
 
                 //display the win message 
-                ShowWinMessage();
+                tutorialUI.ShowWinMessage();
                 atom.Interactable = false;
             }
             
@@ -132,7 +133,7 @@ public class MatchGame : GameBase
         ResetGame();
 
         //display the lose message 
-        ShowLoseMessage();
+        tutorialUI.ShowLoseMessage();
         atom.Interactable = false;
     }
 
@@ -172,13 +173,16 @@ public class MatchGame : GameBase
 
         //determine target electrons
         targetElectrons = targetProtons;
-        Debug.Log(targetElement.Block);
         switch (targetElement.Block)
         {
             case BlockType.sBlock:
                 targetElectrons += Random.Range(0, 2); break;
             case BlockType.pBlock:
                 targetElectrons -= Random.Range(0, 3); break;
+            case BlockType.dBlock:
+            case BlockType.fBlock:
+            default:
+                targetElectrons += Random.Range(-3, 2); break;
         }
 
         targetSymbol.SetSymbol(targetElement, targetProtons, mass, targetElectrons);
