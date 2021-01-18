@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 using Atom;
 using Atom.Util;
 
-public class MatchGame : MonoBehaviour
+public class MatchGame : GameBase
 {
     //Game: generate a target element (from first 3 rows) and then start a timer to match the element
 
@@ -24,30 +24,18 @@ public class MatchGame : MonoBehaviour
     private bool glowAnimating = false;
     [SerializeField] private Text timerText;
 
-    [Header("Panel")]
-    [SerializeField] private GameObject tutorialUI;
-    [SerializeField] private Text message;
-    [SerializeField] private Text title;
-    [TextArea] [SerializeField] private string tutorialText;
-    [TextArea] [SerializeField] private string winText;
-    [TextArea] [SerializeField] private string loseText;
-
     private int targetProtons = 1, targetNeutrons = 0, targetElectrons = 1;
     private int numCompleted = 0;
     private bool challenge = false;
 
-    private AudioSource audioSource;
-
-    private void Awake()
+    protected override void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
+        base.Awake();
+
         starImages = stars.GetComponentsInChildren<SVGImage>();
 
         glowEffect.gameObject.SetActive(false); //hide the gloweffect
         
-        tutorialUI.gameObject.SetActive(true); //show the tutorial
-        title.text = "SYMBOL MATCH";
-        message.text = tutorialText;
 
         //make the text color for target symbol blue
         targetSymbol.SetUIColors(UIColors.blue, true, true, true, true, true);
@@ -115,9 +103,7 @@ public class MatchGame : MonoBehaviour
                 ResetGame();
 
                 //display the win message 
-                tutorialUI.gameObject.SetActive(true); //show the tutorial
-                title.text = "Nice Work!";
-                message.text = winText;
+                ShowWinMessage();
                 atom.Interactable = false;
             }
             
@@ -145,10 +131,8 @@ public class MatchGame : MonoBehaviour
         }
         ResetGame();
 
-        //display the win message 
-        tutorialUI.gameObject.SetActive(true); //show the tutorial
-        title.text = "Out of Time";
-        message.text = loseText;
+        //display the lose message 
+        ShowLoseMessage();
         atom.Interactable = false;
     }
 

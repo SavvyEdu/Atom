@@ -1,13 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Atom.Util;
 
 namespace Atom
 {
-    public enum PeriodicTableDisplayType { Block, Type, BlockCount }
+    public enum PeriodicTableDisplayType { 
+        Block, // abbreviation, color from s/p/d/f block type, yes numbers 
+        Type, // abbreviation, color from type, yes numbers 
+        NoNum, // abbreviation, color from type, no numbers 
+        BlockCount // s/p/d/f, color from s/p/d/f block type, no numbers 
+    }
 
     public class PeriodicTable : MonoBehaviour
     {
@@ -38,7 +40,7 @@ namespace Atom
                     //Hook up button to show the element data
                     Button b = texts[t + 1].GetComponentInParent<Button>();
 
-                    switch (displayType)
+                    switch (displayType) //see enum for description
                     {
                         case PeriodicTableDisplayType.BlockCount:
                             texts[t].text = "";
@@ -51,11 +53,16 @@ namespace Atom
                             texts[t + 1].text = element.Abbreviation;
                             b.image.color = BlockTypeUtil.ColorFromBlock(element.Block); 
                             break;
-                        case PeriodicTableDisplayType.Type:
+                        case PeriodicTableDisplayType.Type: 
                             texts[t].text = protonCount.ToString();
                             texts[t + 1].text = element.Abbreviation;
                             b.image.color = ElementTypeUtil.ColorFromType(element.Type);
                             b.onClick.AddListener(() => SetElement(protonCount));
+                            break;
+                        case PeriodicTableDisplayType.NoNum: 
+                            texts[t].text = "";
+                            texts[t + 1].text = element.Abbreviation;
+                            b.image.color = ElementTypeUtil.ColorFromType(element.Type);
                             break;
                     }
                 }

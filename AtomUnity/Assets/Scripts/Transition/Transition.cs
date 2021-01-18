@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DUI;
 using UnityEngine.UI;
@@ -14,7 +13,7 @@ public class Transition : MonoBehaviour
     [SerializeField] private Trans[] transitions;
 
     //Lerp variables
-    [SerializeField] private float lerpTime = 1.0f;
+    private const float LERP_TIME = 2.0f;
     private float currLerpTime = 0.0f;
 
     public bool Transitioning { get; private set; } = false;
@@ -38,13 +37,13 @@ public class Transition : MonoBehaviour
         {
             UITrans.SetTarget();
         }
-        while (currLerpTime < lerpTime)
+        while (currLerpTime < LERP_TIME)
         {
             currLerpTime += Time.deltaTime;
-            if (currLerpTime > lerpTime)
-                currLerpTime = lerpTime;
+            if (currLerpTime > LERP_TIME)
+                currLerpTime = LERP_TIME;
 
-            float p = currLerpTime / lerpTime;
+            float p = currLerpTime / LERP_TIME;
             p = p * p * (3f - 2f * p); //smooth step
             //p = p*p*p*(p*(p*6-15)+10); //smoother step
             //p = Mathf.Pow(p, 1f / 6f);
