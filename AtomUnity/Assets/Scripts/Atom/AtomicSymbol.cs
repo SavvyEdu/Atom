@@ -7,6 +7,7 @@ namespace Atom
 {
     public class AtomicSymbol : MonoBehaviour
     {
+        [Header("Leave Atom ref null for manual control")]
         [SerializeField] private Atom atom;
         [SerializeField] private Text nameUI;
         [SerializeField] private Text abbreviationUI;

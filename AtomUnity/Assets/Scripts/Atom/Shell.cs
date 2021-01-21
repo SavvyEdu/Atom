@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Atom.Util;
+using System.Linq;
 
 namespace Atom
 {
@@ -211,8 +212,29 @@ namespace Atom
             }
         }
 
+        private void SortParticles()
+        {
+            float GetAngle(Particle p)
+            {
+                float x1 = particles[0].transform.position.x;
+                float y1 = particles[0].transform.position.y;
+                float x2 = p.transform.position.x;
+                float y2 = p.transform.position.y;
+
+                float dot = x1 * x2 + y1 * y2; //dot product
+                float det = x1 * y2 - y1 * x2; //determinatnt
+
+                return Mathf.Atan2(det, dot); //angle
+            }
+
+            //List<Particle> sortedParticles = particles.OrderBy((p) => Vector2.Angle(Vector2.right, p.transform.position)).ToList();
+            particles = particles.OrderBy(p => GetAngle(p)).ToList();
+        }
+
         private void FixedUpdate()
         {
+            bool sort = false;
+
             for (int i = 0, len = ElectronCount; i < len; i++)
             {
                 //calculate force to get into orbit
@@ -250,7 +272,11 @@ namespace Atom
                         particles[j].PhysicsObj.AddForce(forceToSeperate);
                     }
                 }
+
+                sort = sort || particles[i].PhysicsObj.Velocity.sqrMagnitude > 0.1;
             }
+
+            if (sort) { SortParticles(); }
         }
 
         /// <summary> Removes the specified number of electrons (Recursive) </summary>
