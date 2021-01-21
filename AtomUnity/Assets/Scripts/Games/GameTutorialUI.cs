@@ -6,6 +6,7 @@ public class GameTutorialUI : MonoBehaviour
     [SerializeField] private Text message;
     [SerializeField] private Text title;
     [SerializeField] public Button playButton;
+    [SerializeField] public Button continueButton;
 
     [TextArea] [SerializeField] private string tutorialText;
     [SerializeField] private string tutorialTitle;
@@ -15,6 +16,7 @@ public class GameTutorialUI : MonoBehaviour
 
     [TextArea] [SerializeField] private string loseText;
     [SerializeField] private string loseTitle;
+
 
     public void ShowTutorialMessage()
     {
@@ -35,5 +37,15 @@ public class GameTutorialUI : MonoBehaviour
         gameObject.SetActive(true);
         title.text = loseTitle;
         message.text = loseText;
+    }
+
+    /// <summary>
+    /// Toggle between the play and continue buttons
+    /// </summary>
+    /// <param name="show"></param>
+    public void ShowContinueButton(bool show)
+    {
+        continueButton.gameObject.SetActive(show);
+        playButton.gameObject.SetActive(!show);
     }
 }

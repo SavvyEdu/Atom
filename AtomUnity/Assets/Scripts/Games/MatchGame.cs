@@ -20,23 +20,20 @@ public class MatchGame : GameBase
     [Header("Effects")]
     [SerializeField] private GameObject stars;
     private SVGImage[] starImages;
-    [SerializeField] private SpriteRenderer glowEffect;
-    private bool glowAnimating = false;
+    [SerializeField] private GlowFX glowFX;
     [SerializeField] private Text timerText;
 
     private int targetProtons = 1, targetNeutrons = 0, targetElectrons = 1;
     private int numCompleted = 0;
     private bool challenge = false;
 
+    private bool gameRunning = false;
+
     protected override void Awake()
     {
         base.Awake();
 
-        tutorialUI.playButton.onClick.AddListener(StartGame);
-
         starImages = stars.GetComponentsInChildren<SVGImage>();
-
-        glowEffect.gameObject.SetActive(false); //hide the gloweffect
         
         //make the text color for target symbol blue
         targetSymbol.SetUIColors(UIColors.blue, true, true, true, true, true);
@@ -46,21 +43,21 @@ public class MatchGame : GameBase
         Random.InitState((int)Time.time);
     }
 
-    private void Start()
+    public override void StartGame()
     {
-        ResetGame();
-    }
+        if (gameRunning) return;
+        gameRunning = true;
 
-    public void StartGame()
-    {
         atom.Interactable = true;
         StartCoroutine("Coutdown");
-    }
 
-    private void ResetGame()
-    {
         //remove atom particles
         atom.ForceToCommon(1);
+    }
+
+    public override void ResetGame()
+    {
+        gameRunning = false;
 
         //reset targets
         targetProtons = 1;
@@ -91,9 +88,8 @@ public class MatchGame : GameBase
             charge: eMatch);
 
         //check for all matching
-        if (!glowAnimating && pMatch && nMatch && eMatch) 
+        if (!glowFX.IsAnimating && pMatch && nMatch && eMatch) 
         {
-            glowAnimating = true;
 
             starImages[numCompleted].color = Color.yellow;
             numCompleted++;
@@ -112,7 +108,7 @@ public class MatchGame : GameBase
             audioSource.Play();
 
             //Visual glow then Make a new target after
-            StartCoroutine(GlowFX(audioSource.clip.length, SetRandomTarget));
+            glowFX.BeginAnimation(audioSource.clip.length, UIColors.yellow, callback: SetRandomTarget);
         }
     }
 
@@ -137,32 +133,8 @@ public class MatchGame : GameBase
         atom.Interactable = false;
     }
 
-    private IEnumerator GlowFX(float time, Action callback = null)
-    {
-        glowEffect.gameObject.SetActive(true);
-
-        float t = 0, p = 0;
-        Color c = glowEffect.color;
-        while (t < time)
-        {
-            t += Time.deltaTime;
-            p = t / time;
-
-            c.a = 1 - (p*p); //alpha fade 1 -> 0
-            glowEffect.color = c;
-            glowEffect.transform.localScale = Vector3.one * Mathf.Lerp(0.5f, 10f, p*p); //scale up 
-
-            yield return new WaitForEndOfFrame();
-        }
-
-        //invoke the callback function if there is one
-        callback?.Invoke();
-    }
-
     private void SetRandomTarget()
     {
-        glowAnimating = false;
-
         //determine target protons (randomly increase the count)
         targetProtons = Random.Range(targetProtons + 2, targetProtons + 5);
         Element targetElement = Elements.GetElement(targetProtons);
@@ -188,5 +160,8 @@ public class MatchGame : GameBase
         targetSymbol.SetSymbol(targetElement, targetProtons, mass, targetElectrons);
     }
 
-
+    public override void ContinueGame()
+    {
+        throw new NotImplementedException();
+    }
 }
