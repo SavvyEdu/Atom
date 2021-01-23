@@ -1,16 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(AudioSource))]
 public abstract class GameBase : MonoBehaviour
 {
     protected GameTutorialUI tutorialUI;
-    protected AudioSource audioSource;
 
     protected virtual void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
-
         //find and show the tutorial message
         tutorialUI = FindObjectOfType<GameTutorialUI>(true);
         tutorialUI.playButton.onClick.AddListener(StartGame);

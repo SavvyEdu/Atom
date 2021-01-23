@@ -17,12 +17,16 @@ public class GameTutorialUI : MonoBehaviour
     [TextArea] [SerializeField] private string loseText;
     [SerializeField] private string loseTitle;
 
+    [TextArea] [SerializeField] private string bonusText;
+    [SerializeField] private string bonusTitle;
+
 
     public void ShowTutorialMessage()
     {
         gameObject.SetActive(true); //show the tutorial
         title.text = tutorialTitle;
         message.text = tutorialText;
+        ShowContinueButton(false); 
     }
 
     public void ShowWinMessage()
@@ -37,6 +41,13 @@ public class GameTutorialUI : MonoBehaviour
         gameObject.SetActive(true);
         title.text = loseTitle;
         message.text = loseText;
+    }
+
+    public void ShowBonusMessage()
+    {
+        gameObject.SetActive(true);
+        title.text = bonusTitle;
+        message.text = bonusText;
     }
 
     /// <summary>

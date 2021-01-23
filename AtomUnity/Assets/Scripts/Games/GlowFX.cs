@@ -2,21 +2,31 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class GlowFX : MonoBehaviour
 {
     private SpriteRenderer renderer;
+    private AudioSource source;
+
+    [SerializeField] private AudioClip PositiveSound;
+    [SerializeField] private AudioClip NegativeSound;
+
     public bool IsAnimating { get; private set; } = false;
 
     private void Awake()
     {
         renderer = GetComponent<SpriteRenderer>();
+        source = GetComponent<AudioSource>();
         gameObject.SetActive(false);
     }
 
-    public void BeginAnimation(float time, Color color, float maxSize = 10f, Action callback = null)
+    public void BeginAnimation(bool positive, Color color, float maxSize = 10f, Action callback = null)
     {
         gameObject.SetActive(true);
-        StartCoroutine(Animate(time, color, maxSize, callback));
+        source.clip = positive ? PositiveSound : NegativeSound;
+        source.Play();
+        StartCoroutine(Animate(source.clip.length, color, maxSize, callback));
     }
     private IEnumerator Animate(float time, Color color, float maxSize, Action callback)
     {

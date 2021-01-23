@@ -22,11 +22,12 @@ namespace Atom
         /// </summary>
         public Action<int> OnElementSelect;
 
-        private List<Button> buttons = new List<Button>();
+        private Button[] buttons;
 
         private void Awake()
         {
             Text[] texts = GetComponentsInChildren<Text>();
+            buttons = new Button[118];
 
             //loop over the text elements in the table
             for (int t = 0; t < texts.Length; t += 2)
@@ -47,7 +48,7 @@ namespace Atom
                     //Hook up button to show the element data
                     Button b = texts[t + 1].GetComponentInParent<Button>();
                     b.onClick.AddListener(() => OnElementSelect?.Invoke(protonCount));
-                    buttons.Add(b);
+                    buttons[protonCount - 1] = b; 
 
                     switch (displayType) //see enum for description
                     {
@@ -84,7 +85,7 @@ namespace Atom
 
         public void ShowAtomicNumber(int protonCount)
         {
-            buttons[protonCount-1].gameObject.GetComponentInChildren<Text>().text = protonCount.ToString();
+            buttons[protonCount - 1].gameObject.GetComponentInChildren<Text>().text = protonCount.ToString();
         }
 
         public void HideAtomicNumber(int protonCount)

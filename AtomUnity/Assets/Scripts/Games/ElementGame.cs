@@ -36,7 +36,9 @@ public class ElementGame : GameBase
     private int targetIndex;
     private List<int> availableElements;
     private List<int> completedElements;
-    private int maxUnlocked = 6;
+    private int maxUnlocked;
+
+    private bool gameRunning = false;
 
     protected override void Awake()
     {
@@ -52,11 +54,14 @@ public class ElementGame : GameBase
 
     public override void ResetGame()
     {
+        gameRunning = false;
+
         timer = START_TIME;
         timerText.text = $"0:{START_TIME}";
 
         availableElements.Clear();
-        availableElements.AddRange(new int[] { 1, 2, 3, 4, 5, 6 });
+        maxUnlocked = 2;
+        availableElements.AddRange(new int[] { 1, 2 });
 
         //hide numbers on table and clear list
         foreach(int protonCount in completedElements)
@@ -67,8 +72,20 @@ public class ElementGame : GameBase
 
     public override void StartGame()
     {
+        if (gameRunning) return;
+        gameRunning = true;
+
         StartCoroutine("Coutdown");
+
+        //remove atom particles
+        atom.ForceToCommon(1);
+
         SetSymbolFromAvailable();
+    }
+
+    public override void ContinueGame()
+    {
+        timer += START_TIME; //add bonus time
     }
 
     private void SetSymbolFromAvailable()
@@ -87,7 +104,10 @@ public class ElementGame : GameBase
     {
         if(protonCount == targetProtonCount)
         {
-            timer += 3;
+            timer += 4;
+            //positive feedback
+            table.ShowAtomicNumber(protonCount);
+            glowFX.BeginAnimation(true, UIColors.yellow, 4.0f, SetSymbolFromAvailable);
             //remove current
             availableElements.RemoveAt(targetIndex);
             //add the next 2 higheset
@@ -99,26 +119,25 @@ public class ElementGame : GameBase
             //add to completed
             completedElements.Add(protonCount);
             completedText.text = completedElements.Count.ToString();
+            //check for win and bonus win
             if(completedElements.Count == 20)
             {
                 tutorialUI.ShowWinMessage();
                 tutorialUI.ShowContinueButton(true);
             }
-            if(completedElements.Count == 118)
+            else if(completedElements.Count == 118)
             {
-                //BONUS
+                StopCoroutine("Coutdown"); //stop the coutdown
+                ResetGame();
+                tutorialUI.ShowBonusMessage();
+                tutorialUI.ShowContinueButton(false);
             }
-
-            //positive feedback
-            table.ShowAtomicNumber(protonCount);
-            glowFX.BeginAnimation(1.0f, UIColors.yellow, 4.0f);
         }
         else
         {
-            timer -= 1;
-            glowFX.BeginAnimation(1.0f, UIColors.orange, 4.0f);
+            timer -= 1; 
+            glowFX.BeginAnimation(false, UIColors.orange, 4.0f, SetSymbolFromAvailable);
         }
-        SetSymbolFromAvailable();
     }
 
     private IEnumerator Coutdown()
@@ -127,7 +146,7 @@ public class ElementGame : GameBase
         {
             //decrement timer every second
             yield return new WaitForSeconds(1);
-            if (!tutorialUI.gameObject.activeSelf)
+            if (!tutorialUI.gameObject.activeSelf) //paused
             {
                 timer--;
 
@@ -143,11 +162,9 @@ public class ElementGame : GameBase
 
         //display the lose message 
         tutorialUI.ShowLoseMessage();
+        tutorialUI.ShowContinueButton(false);
         atom.Interactable = false;
     }
 
-    public override void ContinueGame()
-    {
-        throw new System.NotImplementedException();
-    }
+
 }

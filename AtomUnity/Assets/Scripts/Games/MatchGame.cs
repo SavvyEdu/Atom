@@ -96,19 +96,24 @@ public class MatchGame : GameBase
             if(numCompleted == stars.transform.childCount)
             {
                 StopCoroutine("Coutdown"); //stop the coutdown
-                challenge = true;
+                
                 ResetGame();
 
                 //display the win message 
-                tutorialUI.ShowWinMessage();
+                if (challenge)
+                {
+                    tutorialUI.ShowBonusMessage();
+                }
+                else
+                {
+                    tutorialUI.ShowWinMessage();
+                    challenge = true;
+                }
+                
                 atom.Interactable = false;
             }
-            
-            // Play the completed SFX
-            audioSource.Play();
-
             //Visual glow then Make a new target after
-            glowFX.BeginAnimation(audioSource.clip.length, UIColors.yellow, callback: SetRandomTarget);
+            glowFX.BeginAnimation(true, UIColors.yellow, callback: SetRandomTarget);
         }
     }
 
