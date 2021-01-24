@@ -3,12 +3,11 @@ using UnityEngine.UI;
 
 public abstract class GameBase : MonoBehaviour
 {
-    protected GameTutorialUI tutorialUI;
+    [SerializeField] protected GameTutorialUI tutorialUI;
 
     protected virtual void Awake()
     {
         //find and show the tutorial message
-        tutorialUI = FindObjectOfType<GameTutorialUI>(true);
         tutorialUI.playButton.onClick.AddListener(StartGame);
         tutorialUI.continueButton.onClick.AddListener(ContinueGame);
         tutorialUI.ShowTutorialMessage();
