@@ -1108,7 +1108,7 @@ PrefabInstance:
     - target: {fileID: 3044041944300350649, guid: 7f7a5a4486f0bd14d84ff11638f7d7af,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3044041944300350649, guid: 7f7a5a4486f0bd14d84ff11638f7d7af,
         type: 3}
@@ -1338,6 +1338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f09ceb0c061dab429503636720dc879, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ProgressKey: Quickstart
   BackButton: {fileID: 1390449086}
   NextButton: {fileID: 1390449085}
   sequence:

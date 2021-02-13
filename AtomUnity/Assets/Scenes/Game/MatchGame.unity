@@ -2066,6 +2066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 030374007214f95418744886a9e592f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ProgressKey: SymbolMatch
   tutorialUI: {fileID: 1661791249417425751}
   atom: {fileID: 1619073828}
   targetSymbol: {fileID: 146227972}

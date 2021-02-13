@@ -15,7 +15,7 @@ ScriptedImporter:
   alignment: 9
   customPivot: {x: 0.2, y: 0.5}
   generatePhysicsShape: 0
-  viewportOptions: 0
+  viewportOptions: 1
   preserveViewport: 0
   advancedMode: 0
   predefinedResolutionIndex: 1

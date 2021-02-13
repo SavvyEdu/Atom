@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public abstract class GameBase : MonoBehaviour
 {
+    [SerializeField] private string ProgressKey;
     [SerializeField] protected GameTutorialUI tutorialUI;
 
     protected virtual void Awake()
@@ -22,6 +23,14 @@ public abstract class GameBase : MonoBehaviour
     /// Called when the game is started
     /// </summary>
     public abstract void StartGame();
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public virtual void CompleteGame()
+    {
+        ModuleProgress.SetCompleted(ProgressKey);
+    }
 
     /// <summary>
     /// Called when the win condition is met (also by Start)

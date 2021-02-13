@@ -12,7 +12,7 @@ using Atom.Util;
 public class MatchGame : GameBase
 {
     //Game: generate a target element (from first 3 rows) and then start a timer to match the element
-
+    
     [SerializeField] private Atom.Atom atom;
     [SerializeField] private AtomicSymbol targetSymbol;
     [SerializeField] private AtomicSymbol atomSymbol;
@@ -90,7 +90,6 @@ public class MatchGame : GameBase
         //check for all matching
         if (!glowFX.IsAnimating && pMatch && nMatch && eMatch) 
         {
-
             starImages[numCompleted].color = Color.yellow;
             numCompleted++;
             if(numCompleted == stars.transform.childCount)
@@ -107,6 +106,7 @@ public class MatchGame : GameBase
                 else
                 {
                     tutorialUI.ShowWinMessage();
+                    CompleteGame();
                     challenge = true;
                 }
                 

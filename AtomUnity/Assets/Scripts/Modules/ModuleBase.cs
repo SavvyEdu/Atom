@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class ModuleBase : MonoBehaviour
 {
+    [SerializeField] private string ProgressKey;
     [SerializeField] private Button BackButton;
     [SerializeField] private Button NextButton;
 
@@ -49,6 +50,9 @@ public class ModuleBase : MonoBehaviour
         OnChange?.Invoke(index);
 
         if (index == 1) { BackButton.interactable = true; }
-        if (index == sequence.Length - 1) { NextButton.interactable = false; }
+        if (index == sequence.Length - 1) { 
+            NextButton.interactable = false;
+            ModuleProgress.SetCompleted(ProgressKey);
+        }
     }
 }

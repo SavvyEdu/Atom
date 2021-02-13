@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class ModuleProgress : MonoBehaviour
 {
@@ -11,11 +13,17 @@ public class ModuleProgress : MonoBehaviour
     {
         foreach (ModuleData data in moduleData)
         {
-            //PlayerPrefs.GetInt(data.key, 0) == 1;
-            
+            bool completed = PlayerPrefs.GetInt(data.key, 0) == 1;
+            Color color = completed ? Color.white : new Color(1, 1, 1, 0);
+
+            data.moduleUI.GetComponentInChildren<SVGImage>().color = color;
         }
     }
 
+    public static void SetCompleted(string key)
+    {
+        PlayerPrefs.SetInt(key, 1);
+    }
 
     //TODO: should probably loop over keys 
     //TODO: hook up to settings panel UI 
@@ -24,10 +32,9 @@ public class ModuleProgress : MonoBehaviour
     }
 }
 
-
+[System.Serializable]
 public struct ModuleData
 {
     public string key;
-    public GameObject UI;
-    public bool hasBonus;
+    public GameObject moduleUI;
 }

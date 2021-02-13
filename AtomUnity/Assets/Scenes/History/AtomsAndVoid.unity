@@ -4558,6 +4558,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 400b3932dab741343847a8711b7a280a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ProgressKey: AtomAndVoid
   BackButton: {fileID: 1704074436}
   NextButton: {fileID: 500875252}
   sequence:

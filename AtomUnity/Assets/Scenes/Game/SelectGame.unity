@@ -11549,6 +11549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f158bd5770f76d445bd95d23e0bd6153, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ProgressKey: ElementSelect
   tutorialUI: {fileID: 2011223490}
   atom: {fileID: 1619073828}
   symbol: {fileID: 1417752150}

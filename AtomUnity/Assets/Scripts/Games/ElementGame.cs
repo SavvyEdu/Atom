@@ -123,6 +123,7 @@ public class ElementGame : GameBase
             if(completedElements.Count == 20)
             {
                 tutorialUI.ShowWinMessage();
+                CompleteGame();
                 tutorialUI.ShowContinueButton(true);
             }
             else if(completedElements.Count == 118)
