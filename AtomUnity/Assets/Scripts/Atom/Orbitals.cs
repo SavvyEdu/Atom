@@ -226,11 +226,21 @@ namespace Atom {
         /// </summary>
         private void AdjustColor(GameObject obj, int l, int ms)
         {
+            if (obj == null) return; //exit out to avoid no object error
+
             Renderer[] renderers = obj.GetComponentsInChildren<Renderer>(); //get all the renderers
             Color color = BlockTypeUtil.ColorFromBlock((BlockType)l); //get color from (l)
-            if (Settings.MATERIAL == SettingsMaterial.Transparent) { color = Color.Lerp(color, new Color(1, 1, 1), 0.8f); color.a = 0.3f; } //tone down transparency
+
+            if (Settings.MATERIAL == SettingsMaterial.Transparent) //tone down transparency
+            { 
+                color = Color.Lerp(color, new Color(1, 1, 1), 0.8f); 
+                color.a = 0.3f; 
+            } 
             //if (ms == -1) { color.r /= 2; color.g /= 2; color.b /= 2; } //tone down for one electron in shell
-            if (ms == -1) { color -= new Color(0.3f, 0.3f, 0.3f, 0f); } //tone down for one electron in shell
+            if (ms == -1) //tone down for one electron in shell
+            { 
+                color -= new Color(0.3f, 0.3f, 0.3f, 0f); 
+            } 
             foreach (Renderer r in renderers)
             {
                 r.material.SetColor("_Color", color);
