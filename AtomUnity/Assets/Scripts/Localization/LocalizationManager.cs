@@ -7,8 +7,9 @@ namespace Localization
 {
     public class LocalizationManager : MonoBehaviour
     {
-        private Dictionary<string, string> localizedText;
-        public bool isLoaded { get; private set; } = false;
+        private static Dictionary<string, string> localizedText;
+        public static bool IsLoaded { get; private set; } = false;
+        private const string missingTextString = "[text not found]";
 
         public void LoadLocalizedText(string fileName)
         {
@@ -35,7 +36,17 @@ namespace Localization
                 Debug.LogError("Cannot find file!");
             }
 
-            isLoaded = true;
+            IsLoaded = true;
         }
+
+        public static string GetLocalizedValue(string key)
+        {
+            if (localizedText.ContainsKey(key))
+            {
+                return localizedText[key];
+            }
+            return missingTextString; //default to missing text
+        }
+
     }
 }
