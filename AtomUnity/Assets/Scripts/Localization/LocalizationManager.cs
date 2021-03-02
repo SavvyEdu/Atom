@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 namespace Localization
 {
@@ -10,6 +11,11 @@ namespace Localization
         private static Dictionary<string, string> localizedText;
         public static bool IsLoaded { get; private set; } = false;
         private const string missingTextString = "[text not found]";
+
+        public void Awake() {
+            string savedLocalizationFileName = PlayerPrefs.GetString("localization", "localization_en.json");
+            LoadLocalizedText(savedLocalizationFileName);
+        }
 
         public void LoadLocalizedText(string fileName)
         {
@@ -30,22 +36,33 @@ namespace Localization
                 }
 
                 Debug.Log($"Data loaded from {fileName}. Dictionary contains: {localizedText.Count} entries");
+                PlayerPrefs.SetString("localization", fileName); //save the filename
+
+                IsLoaded = true;
+                UpdateLocalizationTextsInScene();
             }
             else
             {
                 Debug.LogError("Cannot find file!");
             }
+        }
 
-            IsLoaded = true;
+        private void UpdateLocalizationTextsInScene()
+        {
+            var localizedTexts = FindObjectsOfType<LocalizedText>();
+            foreach(var localizedText in localizedTexts)
+            {
+                localizedText.UpdateText();
+            }
         }
 
         public static string GetLocalizedValue(string key)
         {
-            if (localizedText.ContainsKey(key))
+            if (!(IsLoaded && localizedText.ContainsKey(key))) //check for Loaded and known key
             {
-                return localizedText[key];
+                return missingTextString; //default to missing text
             }
-            return missingTextString; //default to missing text
+            return localizedText[key];
         }
 
     }

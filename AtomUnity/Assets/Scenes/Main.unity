@@ -942,7 +942,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Spanish
+  m_Text: Hindi
 --- !u!222 &92801385
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1328,18 +1328,18 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1151953698}
+  - {fileID: 577712816}
   - {fileID: 412617798}
   - {fileID: 1271409162}
-  - {fileID: 577712816}
   - {fileID: 627683477}
   - {fileID: 1840473452}
   m_Father: {fileID: 963023412}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -40}
-  m_SizeDelta: {x: -40, y: -120}
+  m_AnchorMin: {x: 0, y: 0.7}
+  m_AnchorMax: {x: 1, y: 0.9}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -40, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &169126501
 MonoBehaviour:
@@ -2611,6 +2611,7 @@ GameObject:
   - component: {fileID: 368073837}
   - component: {fileID: 368073839}
   - component: {fileID: 368073838}
+  - component: {fileID: 368073840}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -2677,6 +2678,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 368073836}
   m_CullTransparentMesh: 0
+--- !u!114 &368073840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 368073836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea0c7696de76dd64491d964f1332af03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: menu_3
 --- !u!1 &387737376
 GameObject:
   m_ObjectHideFlags: 0
@@ -2921,7 +2935,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &412617798
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2936,12 +2950,12 @@ RectTransform:
   - {fileID: 389803439}
   - {fileID: 1702510039}
   m_Father: {fileID: 169126500}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 189.29999, y: -377.0833}
+  m_SizeDelta: {x: 378.59998, y: 138.83333}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &412617799
 MonoBehaviour:
@@ -3006,7 +3020,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 963023416}
+      - m_Target: {fileID: 0}
         m_MethodName: LoadLocalizedText
         m_Mode: 5
         m_Arguments:
@@ -3204,6 +3218,7 @@ GameObject:
   - component: {fileID: 443192455}
   - component: {fileID: 443192457}
   - component: {fileID: 443192456}
+  - component: {fileID: 443192458}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -3270,6 +3285,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 443192454}
   m_CullTransparentMesh: 0
+--- !u!114 &443192458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 443192454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea0c7696de76dd64491d964f1332af03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: menu_0
 --- !u!1 &453944928
 GameObject:
   m_ObjectHideFlags: 0
@@ -3680,7 +3708,7 @@ GameObject:
   - component: {fileID: 577712818}
   - component: {fileID: 577712817}
   m_Layer: 5
-  m_Name: Spanish Button
+  m_Name: Hindi Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3700,7 +3728,7 @@ RectTransform:
   - {fileID: 1393941196}
   - {fileID: 92801383}
   m_Father: {fileID: 169126500}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3770,7 +3798,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 963023416}
+      - m_Target: {fileID: 1540285404}
         m_MethodName: LoadLocalizedText
         m_Mode: 5
         m_Arguments:
@@ -3778,7 +3806,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: hi.json
+          m_StringArgument: localization_hi.json
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &577712819
@@ -4251,7 +4279,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &627683477
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4268,10 +4296,10 @@ RectTransform:
   m_Father: {fileID: 169126500}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 189.29999, y: -684.75}
+  m_SizeDelta: {x: 378.59998, y: 138.83333}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &627683478
 MonoBehaviour:
@@ -4336,7 +4364,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 963023416}
+      - m_Target: {fileID: 0}
         m_MethodName: LoadLocalizedText
         m_Mode: 5
         m_Arguments:
@@ -4412,6 +4440,7 @@ GameObject:
   - component: {fileID: 690750148}
   - component: {fileID: 690750150}
   - component: {fileID: 690750149}
+  - component: {fileID: 690750151}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -4478,6 +4507,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 690750147}
   m_CullTransparentMesh: 0
+--- !u!114 &690750151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690750147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea0c7696de76dd64491d964f1332af03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: menu_1
 --- !u!1 &698711646
 GameObject:
   m_ObjectHideFlags: 0
@@ -5491,7 +5533,6 @@ GameObject:
   - component: {fileID: 963023415}
   - component: {fileID: 963023414}
   - component: {fileID: 963023413}
-  - component: {fileID: 963023416}
   m_Layer: 5
   m_Name: Localization Group
   m_TagString: Untagged
@@ -5571,18 +5612,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963023411}
   m_CullTransparentMesh: 0
---- !u!114 &963023416
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963023411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22e62f8e12ef92746852977922667844, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &971822555
 GameObject:
   m_ObjectHideFlags: 0
@@ -5841,6 +5870,7 @@ GameObject:
   - component: {fileID: 1057259058}
   - component: {fileID: 1057259060}
   - component: {fileID: 1057259059}
+  - component: {fileID: 1057259061}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -5907,6 +5937,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1057259057}
   m_CullTransparentMesh: 0
+--- !u!114 &1057259061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057259057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea0c7696de76dd64491d964f1332af03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: menu_2
 --- !u!1 &1079613666
 GameObject:
   m_ObjectHideFlags: 0
@@ -6722,7 +6765,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 963023416}
+      - m_Target: {fileID: 1540285404}
         m_MethodName: LoadLocalizedText
         m_Mode: 5
         m_Arguments:
@@ -6730,7 +6773,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: en.json
+          m_StringArgument: localization_en.json
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1151953701
@@ -6973,7 +7016,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1271409162
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6988,12 +7031,12 @@ RectTransform:
   - {fileID: 18241349}
   - {fileID: 935986208}
   m_Father: {fileID: 169126500}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 189.29999, y: -530.9167}
+  m_SizeDelta: {x: 378.59998, y: 138.83333}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1271409163
 MonoBehaviour:
@@ -7058,7 +7101,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 963023416}
+      - m_Target: {fileID: 0}
         m_MethodName: LoadLocalizedText
         m_Mode: 5
         m_Arguments:
@@ -8083,6 +8126,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533830480}
   m_CullTransparentMesh: 0
+--- !u!1 &1540285403
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1540285405}
+  - component: {fileID: 1540285404}
+  m_Layer: 0
+  m_Name: Localization
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1540285404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540285403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22e62f8e12ef92746852977922667844, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1540285405
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1540285403}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1574802257
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9319,7 +9405,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1840473452
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9336,10 +9422,10 @@ RectTransform:
   m_Father: {fileID: 169126500}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 189.29999, y: -838.5833}
+  m_SizeDelta: {x: 378.59998, y: 138.83333}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1840473453
 MonoBehaviour:
@@ -9404,7 +9490,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 963023416}
+      - m_Target: {fileID: 0}
         m_MethodName: LoadLocalizedText
         m_Mode: 5
         m_Arguments:

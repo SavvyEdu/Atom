@@ -23,6 +23,9 @@ public class ButtonGroup : MonoBehaviour
                 }
             });
         }
+    }
+    private void Start()
+    {
         buttons[0].onClick?.Invoke();
     }
 }
